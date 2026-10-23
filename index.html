@@ -35,11 +35,11 @@
   }
   #fondo-dinamico::after{
     content:'';position:absolute;inset:0;
-    background:rgba(15,27,61,0.55);
+    background:rgba(15,27,61,0.6); /* Un poco más oscuro para que se lea el texto */
   }
   .contenido{position:relative;z-index:1;width:100%;max-width:900px;padding:20px}
   
-  /* ===== PERGAMINO (caja de contenido) ===== */
+  /* ===== PERGAMINO ===== */
   .pergamino{
     background:var(--pergamino);
     border:3px solid var(--dorado);
@@ -103,12 +103,12 @@
     transition:opacity .6s;
   }
   #avatar-caminando{
-    position:fixed;bottom:10px;z-index:2;
-    width:100px;height:180px;
-    background-image:url('avatar/caminar.png');
-    background-size:400% 100%;
+    position:fixed;bottom:10px;left:10px;z-index:2;
+    width:120px;height:180px;
+    background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png');
+    background-size: 400% 100%;
     background-repeat:no-repeat;
-    animation:caminar 1s steps(4) infinite;
+    animation:caminar 3s steps(4) infinite; /* ANIMACIÓN MÁS LENTA (3s) */
     filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));
     display:none;
   }
@@ -215,6 +215,18 @@
     0%,100%{transform:scale(1)}
     50%{transform:scale(1.1)}
   }
+
+  /* ===== IMPRESIÓN / PDF ===== */
+  @media print {
+    body * { visibility: hidden; }
+    #pantalla-diploma, #pantalla-diploma * { visibility: visible; }
+    #pantalla-diploma {
+      position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+      background: white !important; display: flex; align-items: center; justify-content: center;
+    }
+    #diploma { box-shadow: none !important; border: 4px double var(--dorado) !important; }
+    .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice { display: none !important; }
+  }
   
   /* ===== RESPONSIVE ===== */
   @media(max-width:600px){
@@ -222,7 +234,7 @@
     h2{font-size:1.2em}
     .pergamino{padding:20px}
     #avatar-container{width:80px;height:140px}
-    #avatar-caminando{width:70px;height:130px}
+    #avatar-caminando{width:80px;height:130px}
     #hud{font-size:0.8em;padding:8px 10px}
     #diploma{padding:20px}
     #diploma h1{font-size:1.8em}
@@ -260,7 +272,7 @@
       <h2>La Leyenda del Códice Perdido</h2>
       <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
       <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
-      <h3> Reglas del juego</h3>
+      <h3>📜 Reglas del juego</h3>
       <p>• Cada nivel tiene <strong>3 preguntas aleatorias</strong> de un banco de 10.<br>
          • Ganas <strong>10 puntos</strong> por cada respuesta correcta.<br>
          • Si fallas 2 veces en la misma pregunta, recibirás una <strong>pista</strong> antes de reintentar.<br>
@@ -316,7 +328,8 @@
       <p style="margin-top:30px;font-size:0.9em;color:var(--azul-medio)">Música 2 — Viaje en el Tiempo</p>
     </div>
     <div style="text-align:center">
-      <button class="btn" onclick="location.reload()">🔄 Jugar de nuevo</button>
+      <button class="btn" onclick="window.print()">🖨️ Descargar Diploma (PDF)</button>
+      <button class="btn btn-secundario" onclick="location.reload()">🔄 Jugar de nuevo</button>
     </div>
   </div>
 </div>
@@ -327,7 +340,7 @@
    ============================================================ */
 const BANCO = {
   1: [ // Edad Media
-    {q:"¿Qué institución ejercía el mayor control social y cultural durante la mayor parte de la Edad Media?",o:["Los gremios de comerciantes","La Iglesia y los monasterios","Los reyes y la nobleza laica"],c:1},
+    {q:"¿Qué institución ejercía el mayor control social y cultural durante la mayor parte de Edad Media?",o:["Los gremios de comerciantes","La Iglesia y los monasterios","Los reyes y la nobleza laica"],c:1},
     {q:"¿Cómo se llamaba a las personas que vivían en los alrededores de los monasterios y dependían de sus órdenes?",o:["Burgueses","Villanos","Clérigos"],c:1},
     {q:"¿Cuál fue la gran contribución de Guido d'Arezzo a la música?",o:["Inventar el primer instrumento de teclado","Sentar las bases de la notación musical moderna (pentagrama y nombres de las notas)","Componer la primera ópera de la historia"],c:1},
     {q:"¿Quiénes fueron Léonin y Pérotin, y con qué escuela se les asocia?",o:["Trovadores que cantaban en occitano","Compositores de la Escuela de Notre Dame, pioneros en la polifonía (Organum)","Teóricos que prohibieron el uso de instrumentos en la iglesia"],c:1},
@@ -401,27 +414,27 @@ const BANCO = {
 };
 
 /* ============================================================
-   DATOS DE LOS NIVELES
+   DATOS DE LOS NIVELES (CON RUTAS RAW DE GITHUB)
    ============================================================ */
 const NIVELES = {
   1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco",
      narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.",
-     fondo:"fondos/fondo1.jpg",avatar:"avatar/auri-01.png"},
+     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-01.png"},
   2:{nombre:"Renacimiento",titulo:"🎨 Nivel 2: El Despertar de las Voces",
      narrativa:"Año 1500. Florencia te recibe con luz dorada. El humanismo florece, las voces se entrelazan en polifonía y la imprenta difunde las partituras. Demuestra tu conocimiento del Renacimiento.",
-     fondo:"fondos/fondo2.jpg",avatar:"avatar/auri-02.png"},
+     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo2.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-02.png"},
   3:{nombre:"Barroco",titulo:"👑 Nivel 3: El Palacio del Contrapunto",
      narrativa:"Año 1680. Un palacio de terciopelo y oro se abre ante ti. El bajo continuo retumba, las fugas se enredan y la ópera nace. Bach, Vivaldi y Handel te observan. Supera sus pruebas.",
-     fondo:"fondos/fondo3.jpg",avatar:"avatar/auri-03.png"},
-  4:{nombre:"Clasicismo",titulo:"️ Nivel 4: El Templo de la Razón",
+     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo3.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-03.png"},
+  4:{nombre:"Clasicismo",titulo:"🏛️ Nivel 4: El Templo de la Razón",
      narrativa:"Año 1780. Columnas blancas y cielos azules. La simetría y el equilibrio reinan. Mozart, Haydn y el joven Beethoven te esperan en el templo de la razón musical.",
-     fondo:"fondos/fondo4.jpg",avatar:"avatar/auri-04.png"},
+     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo4.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-04.png"},
   5:{nombre:"Romanticismo",titulo:"🌹 Nivel 5: El Jardín de las Pasiones",
      narrativa:"Año 1850. La luna se refleja en un lago. Un piano de cola espera bajo un sauce llorón. Las emociones desbordan las formas. Chopin, Schumann y Wagner te desafían.",
-     fondo:"fondos/fondo5.jpg",avatar:"avatar/auri-05.png"},
+     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo5.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-05.png"},
   6:{nombre:"Siglo XX y XXI",titulo:"⚡ Nivel 6: El Laboratorio del Futuro",
      narrativa:"Año 2026. Neón, sintetizadores y algoritmos. La música se ha transformado en ondas eléctricas e inteligencia artificial. Demuestra que comprendes el presente y el futuro del sonido.",
-     fondo:"fondos/fondo6.jpg",avatar:"avatar/auri-06.png"}
+     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-06.png"}
 };
 
 /* ============================================================
@@ -431,7 +444,7 @@ let estado = {
   nombre:"",
   nivelActual:1,
   puntos:0,
-  preguntasNivel:[], // 3 preguntas seleccionadas
+  preguntasNivel:[],
   indicePregunta:0,
   fallosEnPregunta:0
 };
@@ -460,7 +473,7 @@ function cargarNivel(n){
   estado.nivelActual = n;
   const nivel = NIVELES[n];
   
-  // Cambiar fondo y avatar
+  // Cambiar fondo y avatar usando las URLs raw
   document.getElementById('fondo-dinamico').style.backgroundImage = `url('${nivel.fondo}')`;
   document.getElementById('avatar-img').src = nivel.avatar;
   
@@ -475,7 +488,6 @@ function cargarNivel(n){
 }
 
 function iniciarNivel(){
-  // Seleccionar 3 preguntas aleatorias del banco
   const banco = BANCO[estado.nivelActual];
   const copia = [...banco];
   estado.preguntasNivel = [];
@@ -491,12 +503,12 @@ function iniciarNivel(){
   caminante.style.display='block';
   caminante.style.left='10px';
   setTimeout(()=>{
-    caminante.style.left='calc(100% - 120px)';
+    caminante.style.left='calc(100% - 130px)';
   },50);
   setTimeout(()=>{
     caminante.style.display='none';
     mostrarPregunta();
-  },2000);
+  },3000); // 3 segundos de caminata
 }
 
 function mostrarPregunta(){
@@ -527,7 +539,6 @@ function responder(idx,btn){
   const todasOpciones = document.querySelectorAll('.opcion');
   
   if(idx === p.c){
-    // Correcta
     btn.classList.add('correcta');
     todasOpciones.forEach(o=>o.classList.add('deshabilitada'));
     estado.puntos += 10;
@@ -537,17 +548,14 @@ function responder(idx,btn){
     feedback.style.display='block';
     document.getElementById('btn-siguiente').style.display='inline-block';
   } else {
-    // Incorrecta
     btn.classList.add('incorrecta');
     btn.classList.add('deshabilitada');
     estado.fallosEnPregunta++;
     
     if(estado.fallosEnPregunta >= 2){
-      // Mostrar pista
       feedback.className='pista';
       feedback.innerHTML = `💡 <strong>Fragmento de Sabiduría:</strong> La respuesta correcta es la opción <strong>${String.fromCharCode(65+p.c)}</strong>. Revisa tus apuntes de este periodo antes de continuar.`;
       feedback.style.display='block';
-      // Marcar la correcta
       todasOpciones[p.c].classList.add('correcta');
       todasOpciones.forEach(o=>o.classList.add('deshabilitada'));
       document.getElementById('btn-siguiente').style.display='inline-block';
@@ -564,9 +572,7 @@ function siguientePregunta(){
   estado.fallosEnPregunta = 0;
   
   if(estado.indicePregunta >= 3){
-    // Fin del nivel
     if(estado.nivelActual < 6){
-      // Vórtice de transición
       const vortice = document.getElementById('vortice');
       document.getElementById('vortice-texto').textContent = `Viajando al ${NIVELES[estado.nivelActual+1].nombre}...`;
       vortice.classList.add('activo');
@@ -575,7 +581,6 @@ function siguientePregunta(){
         cargarNivel(estado.nivelActual+1);
       },2000);
     } else {
-      // Fin del juego → diploma
       mostrarDiploma();
     }
   } else {
@@ -586,6 +591,7 @@ function siguientePregunta(){
 function mostrarDiploma(){
   document.getElementById('hud').style.display='none';
   document.getElementById('avatar-container').style.display='none';
+  document.getElementById('avatar-caminando').style.display='none';
   document.getElementById('fondo-dinamico').style.backgroundImage='none';
   document.getElementById('fondo-dinamico').style.background='linear-gradient(135deg,var(--azul-noche),var(--azul-medio))';
   
