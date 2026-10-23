@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viaje en el Tiempo — Música 2</title>
+<style>
+  :root{
+    --dorado:#d4af37;
+    --dorado-claro:#f5d76e;
+    --azul-noche:#0f1b3d;
+    --azul-medio:#1a2a5e;
+    --pergamino:#f4e4bc;
+    --pergamino-oscuro:#d9c48a;
+    --texto:#2b1d0e;
+    --rojo:#8b1a1a;
+    --verde:#2d6a3f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;font-family:'Georgia',serif;background:var(--azul-noche);color:var(--texto);overflow:hidden}
+  
+  /* ===== PANTALLAS ===== */
+  .pantalla{
+    position:fixed;inset:0;display:none;
+    background:linear-gradient(135deg,var(--azul-noche),var(--azul-medio));
+    overflow-y:auto;
+  }
+  .pantalla.activa{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+  
+  /* ===== FONDO DINÁMICO ===== */
+  #fondo-dinamico{
+    position:fixed;inset:0;z-index:0;
+    background-size:cover;background-position:center;
+    transition:opacity 1s;
+  }
+  #fondo-dinamico::after{
+    content:'';position:absolute;inset:0;
+    background:rgba(15,27,61,0.55);
+  }
+  .contenido{position:relative;z-index:1;width:100%;max-width:900px;padding:20px}
+  
+  /* ===== PERGAMINO (caja de contenido) ===== */
+  .pergamino{
+    background:var(--pergamino);
+    border:3px solid var(--dorado);
+    border-radius:8px;
+    padding:30px;
+    box-shadow:0 0 30px rgba(212,175,55,0.4), inset 0 0 40px rgba(139,26,26,0.08);
+    position:relative;
+  }
+  .pergamino::before,.pergamino::after{
+    content:'';position:absolute;width:40px;height:40px;
+    border:3px solid var(--dorado);
+  }
+  .pergamino::before{top:8px;left:8px;border-right:none;border-bottom:none}
+  .pergamino::after{bottom:8px;right:8px;border-left:none;border-top:none}
+  
+  /* ===== TIPOGRAFÍA ===== */
+  h1{font-size:2.2em;color:var(--rojo);text-align:center;margin-bottom:15px;text-shadow:1px 1px 0 var(--dorado-claro)}
+  h2{font-size:1.6em;color:var(--azul-medio);margin-bottom:15px;text-align:center}
+  h3{font-size:1.3em;color:var(--rojo);margin:15px 0 10px}
+  p{line-height:1.6;margin-bottom:12px;font-size:1.05em}
+  
+  /* ===== BOTONES ===== */
+  .btn{
+    background:linear-gradient(135deg,var(--dorado),var(--dorado-claro));
+    color:var(--azul-noche);
+    border:2px solid var(--rojo);
+    padding:12px 28px;
+    font-size:1.1em;font-weight:bold;
+    border-radius:6px;cursor:pointer;
+    font-family:inherit;
+    transition:transform .15s, box-shadow .15s;
+    margin:8px 4px;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,0.6)}
+  .btn:active{transform:translateY(0)}
+  .btn-secundario{background:var(--pergamino-oscuro)}
+  
+  /* ===== INPUT ===== */
+  input[type="text"]{
+    width:100%;max-width:400px;
+    padding:12px;font-size:1.1em;
+    border:2px solid var(--dorado);
+    border-radius:6px;
+    background:var(--pergamino);
+    font-family:inherit;
+    text-align:center;
+    margin:15px auto;display:block;
+  }
+  input[type="text"]:focus{outline:none;border-color:var(--rojo);box-shadow:0 0 10px var(--dorado)}
+  
+  /* ===== AVATAR ===== */
+  #avatar-container{
+    position:fixed;bottom:10px;left:10px;z-index:2;
+    width:120px;height:200px;
+    pointer-events:none;
+  }
+  #avatar-img{
+    width:100%;height:100%;
+    object-fit:contain;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+    transition:opacity .6s;
+  }
+  #avatar-caminando{
+    position:fixed;bottom:10px;z-index:2;
+    width:100px;height:180px;
+    background-image:url('avatar/caminar.png');
+    background-size:400% 100%;
+    background-repeat:no-repeat;
+    animation:caminar 1s steps(4) infinite;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+    display:none;
+  }
+  @keyframes caminar{
+    from{background-position:0 0}
+    to{background-position:-300% 0}
+  }
+  
+  /* ===== HUD ===== */
+  #hud{
+    position:fixed;top:10px;right:10px;z-index:3;
+    background:rgba(15,27,61,0.9);
+    border:2px solid var(--dorado);
+    border-radius:8px;
+    padding:10px 15px;
+    color:var(--dorado-claro);
+    font-size:0.95em;
+    box-shadow:0 0 15px rgba(212,175,55,0.3);
+  }
+  #hud div{margin:3px 0}
+  .nivel-badge{
+    display:inline-block;
+    background:var(--rojo);color:var(--pergamino);
+    padding:2px 8px;border-radius:4px;
+    font-weight:bold;margin-right:5px;
+  }
+  
+  /* ===== PREGUNTAS ===== */
+  .pregunta{font-size:1.2em;font-weight:bold;margin-bottom:20px;color:var(--azul-noche)}
+  .opciones{display:flex;flex-direction:column;gap:10px}
+  .opcion{
+    background:var(--pergamino-oscuro);
+    border:2px solid var(--dorado);
+    padding:12px 18px;
+    border-radius:6px;
+    cursor:pointer;
+    text-align:left;
+    font-size:1em;font-family:inherit;
+    transition:all .2s;
+  }
+  .opcion:hover{background:var(--dorado-claro);transform:translateX(5px)}
+  .opcion.correcta{background:#7fbf7f;border-color:var(--verde);color:#fff}
+  .opcion.incorrecta{background:#d97070;border-color:var(--rojo);color:#fff}
+  .opcion.deshabilitada{pointer-events:none;opacity:0.6}
+  
+  /* ===== FEEDBACK ===== */
+  #feedback{
+    margin-top:15px;padding:12px;
+    border-radius:6px;
+    font-weight:bold;
+    display:none;
+  }
+  #feedback.ok{background:#c8e6c9;color:#1b5e20;border:2px solid var(--verde)}
+  #feedback.mal{background:#ffcdd2;color:#b71c1c;border:2px solid var(--rojo)}
+  #feedback.pista{background:#fff9c4;color:#7c5e00;border:2px solid var(--dorado)}
+  
+  /* ===== DIPLOMA ===== */
+  #diploma{
+    background:var(--pergamino);
+    border:8px double var(--dorado);
+    padding:40px;
+    text-align:center;
+    box-shadow:0 0 40px rgba(212,175,55,0.6);
+    max-width:600px;
+    margin:20px auto;
+  }
+  #diploma h1{font-size:2.5em;color:var(--rojo);margin-bottom:20px}
+  #diploma .nombre{font-size:1.8em;color:var(--azul-medio);font-style:italic;margin:20px 0;border-bottom:2px solid var(--dorado);padding-bottom:10px}
+  #diploma .texto{font-size:1.1em;margin:20px 0}
+  #diploma .puntuacion{font-size:1.4em;color:var(--dorado);font-weight:bold;margin:20px 0}
+  .sello{
+    display:inline-block;
+    width:100px;height:100px;
+    border:4px solid var(--rojo);
+    border-radius:50%;
+    line-height:92px;
+    color:var(--rojo);
+    font-weight:bold;
+    font-size:0.9em;
+    margin-top:20px;
+    transform:rotate(-15deg);
+  }
+  
+  /* ===== VÓRTICE ===== */
+  #vortice{
+    position:fixed;inset:0;z-index:10;
+    background:radial-gradient(circle, #fff 0%, var(--azul-medio) 40%, #000 100%);
+    display:none;
+    align-items:center;justify-content:center;
+    animation:vortice-anim 2s ease-in-out;
+  }
+  #vortice.activo{display:flex}
+  #vortice span{
+    font-size:3em;color:var(--dorado-claro);
+    text-shadow:0 0 20px var(--dorado);
+    animation:pulse 1s infinite;
+  }
+  @keyframes vortice-anim{
+    0%{opacity:0}
+    50%{opacity:1}
+    100%{opacity:0}
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.1)}
+  }
+  
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:600px){
+    h1{font-size:1.6em}
+    h2{font-size:1.2em}
+    .pergamino{padding:20px}
+    #avatar-container{width:80px;height:140px}
+    #avatar-caminando{width:70px;height:130px}
+    #hud{font-size:0.8em;padding:8px 10px}
+    #diploma{padding:20px}
+    #diploma h1{font-size:1.8em}
+  }
+</style>
+</head>
+<body>
+
+<!-- HUD -->
+<div id="hud" style="display:none">
+  <div><span class="nivel-badge" id="hud-nivel">Nivel 1</span> <span id="hud-periodo">Edad Media</span></div>
+  <div>🎵 Puntos: <span id="hud-puntos">0</span></div>
+  <div>❓ Pregunta: <span id="hud-pregunta">1</span>/3</div>
+</div>
+
+<!-- AVATAR FIJO -->
+<div id="avatar-container" style="display:none">
+  <img id="avatar-img" src="" alt="Avatar">
+</div>
+
+<!-- AVATAR CAMINANDO -->
+<div id="avatar-caminando"></div>
+
+<!-- FONDO DINÁMICO -->
+<div id="fondo-dinamico"></div>
+
+<!-- VÓRTICE DE TRANSICIÓN -->
+<div id="vortice"><span id="vortice-texto">Viajando en el tiempo...</span></div>
+
+<!-- PANTALLA 1: INICIO -->
+<div class="pantalla activa" id="pantalla-inicio">
+  <div class="contenido">
+    <div class="pergamino">
+      <h1>🎼 Viaje en el Tiempo 🎼</h1>
+      <h2>La Leyenda del Códice Perdido</h2>
+      <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
+      <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
+      <h3> Reglas del juego</h3>
+      <p>• Cada nivel tiene <strong>3 preguntas aleatorias</strong> de un banco de 10.<br>
+         • Ganas <strong>10 puntos</strong> por cada respuesta correcta.<br>
+         • Si fallas 2 veces en la misma pregunta, recibirás una <strong>pista</strong> antes de reintentar.<br>
+         • Al final obtendrás un <strong>diploma personalizado</strong>.</p>
+      <p style="text-align:center;margin-top:20px"><strong>¿Aceptas la misión?</strong></p>
+      <input type="text" id="nombre-estudiante" placeholder="Escribe tu nombre completo" maxlength="40">
+      <div style="text-align:center">
+        <button class="btn" onclick="iniciarJuego()">🚀 Comenzar la aventura</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANTALLA 2: NARRATIVA -->
+<div class="pantalla" id="pantalla-narrativa">
+  <div class="contenido">
+    <div class="pergamino">
+      <h2 id="narrativa-titulo"></h2>
+      <p id="narrativa-texto"></p>
+      <div style="text-align:center">
+        <button class="btn" onclick="iniciarNivel()">⚔️ Entrar al reino</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANTALLA 3: PREGUNTAS -->
+<div class="pantalla" id="pantalla-preguntas">
+  <div class="contenido">
+    <div class="pergamino">
+      <h2 id="pregunta-titulo"></h2>
+      <div class="pregunta" id="pregunta-texto"></div>
+      <div class="opciones" id="opciones"></div>
+      <div id="feedback"></div>
+      <div style="text-align:center;margin-top:15px">
+        <button class="btn" id="btn-siguiente" style="display:none" onclick="siguientePregunta()">Siguiente ➡️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PANTALLA 4: DIPLOMA -->
+<div class="pantalla" id="pantalla-diploma">
+  <div class="contenido">
+    <div id="diploma">
+      <h1>🏆 DIPLOMA AL MÉRITO MUSICAL 🏆</h1>
+      <p class="texto">Se otorga a:</p>
+      <div class="nombre" id="diploma-nombre"></div>
+      <p class="texto">Por haber restaurado el Códice del Tiempo Sonoro, demostrando un conocimiento sobresaliente en la Historia de la Música a través de los seis periodos: Edad Media, Renacimiento, Barroco, Clasicismo, Romanticismo y Siglos XX-XXI.</p>
+      <p class="texto"><strong>Tienes el conocimiento general de la historia de la música.</strong></p>
+      <div class="puntuacion">Puntuación final: <span id="diploma-puntos">0</span> / 180</div>
+      <div class="sello" id="diploma-rango">CRONISTA</div>
+      <p style="margin-top:30px;font-size:0.9em;color:var(--azul-medio)">Música 2 — Viaje en el Tiempo</p>
+    </div>
+    <div style="text-align:center">
+      <button class="btn" onclick="location.reload()">🔄 Jugar de nuevo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   BANCO DE 60 PREGUNTAS (10 por nivel)
+   ============================================================ */
+const BANCO = {
+  1: [ // Edad Media
+    {q:"¿Qué institución ejercía el mayor control social y cultural durante la mayor parte de la Edad Media?",o:["Los gremios de comerciantes","La Iglesia y los monasterios","Los reyes y la nobleza laica"],c:1},
+    {q:"¿Cómo se llamaba a las personas que vivían en los alrededores de los monasterios y dependían de sus órdenes?",o:["Burgueses","Villanos","Clérigos"],c:1},
+    {q:"¿Cuál fue la gran contribución de Guido d'Arezzo a la música?",o:["Inventar el primer instrumento de teclado","Sentar las bases de la notación musical moderna (pentagrama y nombres de las notas)","Componer la primera ópera de la historia"],c:1},
+    {q:"¿Quiénes fueron Léonin y Pérotin, y con qué escuela se les asocia?",o:["Trovadores que cantaban en occitano","Compositores de la Escuela de Notre Dame, pioneros en la polifonía (Organum)","Teóricos que prohibieron el uso de instrumentos en la iglesia"],c:1},
+    {q:"¿Qué caracteriza principalmente al Canto Gregoriano?",o:["Es una monodia (una sola línea melódica), a capella y en latín","Es una polifonía compleja con acompañamiento de laúd","Es música profana bailada por los juglares"],c:0},
+    {q:"¿Qué representa Hildegarda von Bingen en la historia de la música?",o:["Fue la primera compositora de la que se conserva su nombre y una obra extensa","Fue la inventora del organistrum","Fue la primera mujer en dirigir una orquesta sinfónica"],c:0},
+    {q:"¿Qué es el 'Organum'?",o:["Un instrumento de viento medieval similar a la flauta","Una de las primeras formas de polifonía, donde se añade una voz sobre el canto gregoriano","Un tratado teórico sobre la afinación de los instrumentos"],c:1},
+    {q:"¿Cuál de los siguientes es un instrumento de viento típico de la Edad Media?",o:["El añafil","La cornamusa","El salterio"],c:1},
+    {q:"¿Qué diferencia principal había entre la música de los monasterios y la de los trovadores/juglares?",o:["La del monasterio era profana y la de los trovadores era sagrada","La del monasterio era sagrada (litúrgica) y la de los trovadores era profana","No había diferencia, ambas usaban los mismos textos en latín"],c:1},
+    {q:"¿Qué compositor es considerado el máximo exponente musical del periodo conocido como 'Ars Nova'?",o:["Guido d'Arezzo","Guillaume de Machaut","Pérotin"],c:1}
+  ],
+  2: [ // Renacimiento
+    {q:"¿Qué movimiento cultural y filosófico caracterizó al Renacimiento, poniendo al ser humano en el centro del pensamiento?",o:["El feudalismo","El humanismo","El romanticismo"],c:1},
+    {q:"¿Cuál es la estructura básica de una Misa (Missa) del Renacimiento?",o:["Introducción, desarrollo y final","Kyrie, Gloria, Credo, Sanctus y Agnus Dei","Preludio, fuga y final"],c:1},
+    {q:"¿Qué compositor es considerado el máximo exponente de la música sacra renacentista y cuya obra influyó en el Concilio de Trento?",o:["Thomas Tallis","Giovanni Pierluigi da Palestrina","Claudio Monteverdi"],c:1},
+    {q:"¿Qué característica destaca a la obra 'Spem in Alium' de Thomas Tallis?",o:["Es una obra monumental escrita para 40 voces","Es la primera ópera completa de la historia","Es una danza instrumental para violín solo"],c:0},
+    {q:"¿Qué papel juega Claudio Monteverdi en la historia de la música?",o:["Fue el inventor del clavicémbalo","Es el puente entre el Renacimiento y el Barroco, introduciendo elementos dramáticos (como en L'Orfeo)","Fue un trovador que cantaba en lenguas vernáculas"],c:1},
+    {q:"¿Qué instrumento de cuerda frotada del Renacimiento es considerado un precursor del violonchelo?",o:["El violín","La viola da gamba","El laúd"],c:1},
+    {q:"¿Qué es un madrigal?",o:["Una obra religiosa basada en textos litúrgicos en latín","Una pieza vocal secular para pequeños grupos, con texto poético","Una danza instrumental de la corte"],c:1},
+    {q:"¿Cuál de los siguientes es un instrumento de viento típico del Renacimiento?",o:["El sacabuche o el cromorno","El sintetizador","La batería moderna"],c:0},
+    {q:"¿Qué compositor es conocido como el 'Maestro de la polifonía' que combinó técnicas medievales con innovaciones renacentistas?",o:["Guido d'Arezzo","Josquin des Prez","Guillaume de Machaut"],c:1},
+    {q:"¿Cómo se llamaban las canciones populares o aristocráticas escritas en lenguas vernáculas durante este periodo?",o:["Cantos gregorianos","Chansons o villancicos (canción cortesana)","Motetes latinos"],c:1}
+  ],
+  3: [ // Barroco
+    {q:"¿Qué acontecimiento en 1750 se considera tradicionalmente el fin del período Barroco?",o:["La invención del pianoforte","La muerte de Johann Sebastian Bach","El estreno de la ópera L'Orfeo"],c:1},
+    {q:"¿Qué elemento técnico se convirtió en la base armónica característica de casi toda la música barroca?",o:["La melodía a capella","El bajo continuo (basso continuo)","El serialismo"],c:1},
+    {q:"¿Qué compositor es considerado el 'padre de la ópera moderna' y puente entre el Renacimiento y el Barroco con su obra L'Orfeo?",o:["Claudio Monteverdi","Antonio Vivaldi","Henry Purcell"],c:0},
+    {q:"¿Por qué es fundamental la figura de Johann Sebastian Bach en la historia de la música?",o:["Por ser el maestro supremo del contrapunto y la fuga","Por inventar el primer instrumento de percusión","Por componer exclusivamente música secular y profana"],c:0},
+    {q:"¿Cuál es la diferencia principal entre un oratorio y una ópera?",o:["El oratorio se canta en latín y la ópera en italiano","El oratorio es una obra vocal de tema usualmente religioso, pero sin escenificación ni vestuario","La ópera no utiliza instrumentos, solo voces"],c:1},
+    {q:"¿Qué compositor alemán-británico es famoso por sus oratorios, especialmente Mesías (con el coro 'Aleluya')?",o:["Domenico Scarlatti","George Frideric Handel","Thomas Tallis"],c:1},
+    {q:"¿Qué instrumento de teclado fue inventado por Bartolomeo Cristofori alrededor de 1720, siendo el antecesor del piano moderno?",o:["El clavecín","El pianoforte","El organistrum"],c:1},
+    {q:"¿Qué forma musical contrapuntística compleja, basada en un tema principal que se imita y repite, fue llevada a su máxima expresión por J.S. Bach?",o:["La suite","La fuga","El madrigal"],c:1},
+    {q:"¿Cómo utilizaron las monarquías absolutas el arte y la música durante el Barroco?",o:["Para promover la igualdad social","Como herramientas de propaganda política para glorificar su poder","Para prohibir la música religiosa en sus cortes"],c:1},
+    {q:"¿Qué compositor italiano es reconocido como un innovador del concierto solista y maestro del virtuosismo, autor de Las Cuatro Estaciones?",o:["Antonio Vivaldi","Giovanni Pierluigi da Palestrina","Claudio Monteverdi"],c:0}
+  ],
+  4: [ // Clasicismo
+    {q:"¿Entre qué años se ubica tradicionalmente el periodo Clásico en la historia de la música?",o:["1600 a 1750","1750 a 1827","1827 a 1900"],c:1},
+    {q:"¿Qué ideales estéticos, inspirados en las antiguas culturas griega y romana, buscaban los compositores clásicos?",o:["El dramatismo y la exuberancia","El equilibrio y la simetría","La improvisación total y el caos"],c:1},
+    {q:"¿Por qué se le conoce a Joseph Haydn en la historia de la música?",o:["Como el 'Padre de la sinfonía'","Como el inventor del clarinete","Como el primer compositor de óperas románticas"],c:0},
+    {q:"¿Qué compositor es considerado el 'último compositor clásico y primer romántico', cuya muerte en 1827 marca el fin de este periodo?",o:["Wolfgang Amadeus Mozart","Ludwig van Beethoven","Antonio Vivaldi"],c:1},
+    {q:"¿Qué instrumento de viento-madera se consolidó y ganó gran protagonismo en las orquestas durante el Clasicismo?",o:["El añafil","El clarinete","El sacabuche"],c:1},
+    {q:"¿Cómo se define la 'Sinfonía' en el periodo Clásico?",o:["Una obra para un solo instrumento de teclado","Una forma donde la orquesta completa interpreta la obra de manera unificada, como si fuera un solo instrumento","Una danza popular de la corte"],c:1},
+    {q:"¿Cuál es la estructura básica de la forma 'Allegro-Sonata' (o Forma Sonata)?",o:["Introducción, nudo y desenlace","Exposición (dos temas contrastantes), Elaboración y Reexposición","Tema y 5 variaciones"],c:1},
+    {q:"En el concierto clásico, ¿cuál es el objetivo principal de esta forma musical?",o:["Que todos los instrumentos toquen exactamente lo mismo","El lucimiento de un instrumento solista, mientras la orquesta proporciona el acompañamiento necesario","Cantar textos religiosos sin escenificación"],c:1},
+    {q:"¿Qué instrumento de cuerda frotada, mencionado en el material, es un antecedente curioso de la guitarra moderna?",o:["La viola da gamba","El arpeggione","El organistrum"],c:1},
+    {q:"¿Qué forma de música de cámara se volvió emblemática del Clasicismo, reemplazando a la 'trío sonata' del Barroco?",o:["El madrigal","El cuarteto de cuerdas","El oratorio"],c:1}
+  ],
+  5: [ // Romanticismo
+    {q:"¿Cuál es el rango de fechas tradicionalmente aceptado para el periodo Romántico en la música?",o:["1920 a 2000","1820 a 1900","1750 a 1820"],c:1},
+    {q:"¿Qué elementos se convirtieron en el centro de la creación artística durante el Romanticismo, en contraposición a las restricciones del Clasicismo?",o:["La simetría, el equilibrio y la razón pura","Los sentimientos, la naturaleza y la individualidad","La religión y el poder absoluto de los monarcas"],c:1},
+    {q:"¿Qué compositor es conocido como el maestro del piano, famoso por sus nocturnos, valses y estudios?",o:["Franz Schubert","Frédéric Chopin","Hector Berlioz"],c:1},
+    {q:"¿Qué forma musical, popularizada por Schubert y Schumann, combina poesía y música para expresar emociones íntimas?",o:["El madrigal","El Lied (canción para voz y piano)","La fuga"],c:1},
+    {q:"¿Quién es el compositor innovador de la orquesta, autor de la Sinfonía Fantástica?",o:["Felix Mendelssohn","Hector Berlioz","Pyotr Ilyich Tchaikovsky"],c:1},
+    {q:"¿Qué compositor revolucionó la ópera introduciendo el concepto de 'drama musical'?",o:["Richard Wagner","Ludwig van Beethoven","Domenico Scarlatti"],c:0},
+    {q:"¿Qué instrumento de viento, inventado por Adolphe Sax, se incorporó a las orquestas durante este periodo?",o:["El clarinete","El saxofón","El cromorno"],c:1},
+    {q:"¿Qué forma musical, creada por Franz Liszt, busca narrar una historia o describir una imagen a través de la orquesta?",o:["La suite","El poema sinfónico","El concierto grosso"],c:1},
+    {q:"¿Qué compositor es uno de los grandes exponentes de la música rusa y autor de ballets como El lago de los cisnes?",o:["Pyotr Ilyich Tchaikovsky","Robert Schumann","Joseph Haydn"],c:0},
+    {q:"¿Qué evolución sufrió la guitarra durante el siglo XIX según el material?",o:["Desapareció por completo de la música culta","Pasó de ser una guitarra romántica a la guitarra moderna hacia finales del siglo","Se convirtió en un instrumento exclusivo de la orquesta sinfónica"],c:1}
+  ],
+  6: [ // S. XX y XXI
+    {q:"¿Qué compositor es considerado el precursor de la ruptura con la tradición tonal, iniciando el Impresionismo musical?",o:["Igor Stravinsky","Achille Claude Debussy","Arnold Schönberg"],c:1},
+    {q:"¿Qué técnica compositiva, creada por Arnold Schönberg, busca que todos los sonidos tengan la misma relevancia, como una 'democracia sonora'?",o:["El serialismo","El dodecafonismo","El microtonalismo"],c:1},
+    {q:"¿Qué compositor mexicano es reconocido como el creador de la 'Teoría del Sonido 13' y pionero del microtonalismo?",o:["Manuel M. Ponce","Julián Carrillo","Julio Estrada"],c:1},
+    {q:"¿Cuál de los siguientes instrumentos es un electrófono característico del Siglo XX, conocido por su sonido etéreo y controlado sin contacto físico?",o:["El sintetizador","El theremin","La guitarra eléctrica"],c:1},
+    {q:"¿Qué técnica compositiva organiza sistemáticamente no solo las alturas, sino también las intensidades, timbres y duraciones?",o:["El impresionismo","El serialismo integral","El dodecafonismo"],c:1},
+    {q:"¿Qué papel juega Nadia Boulanger en la historia de la música del siglo XX?",o:["Fue la inventora del sintetizador","Fue la pedagoga más influyente del siglo, maestra de generaciones de compositores","Fue la primera mujer en dirigir una orquesta sinfónica"],c:1},
+    {q:"¿Qué compositor mexicano es considerado el padre del nacionalismo musical en México, con obras como Sunam-i y Concierto romántico?",o:["Manuel M. Ponce","Julio Estrada","Mario Lavista"],c:0},
+    {q:"¿Qué característica define la escucha musical cotidiana en el siglo XXI según el material?",o:["Es una elección completamente libre y personal de cada individuo","Está mediada por algoritmos digitales que seleccionan automáticamente la música, con fines comerciales","Se basa exclusivamente en la música en vivo y los conciertos"],c:1},
+    {q:"¿Qué compositor ruso es autor de obras revolucionarias como La consagración de la primavera, que escandalizó al público de su época?",o:["Serguéi Rajmáninov","Igor Stravinsky","Heitor Villa-Lobos"],c:1},
+    {q:"¿Qué compositor mexicano contemporáneo (nacido en 1943) y compositora mexicana (nacida en 1964) representan la creación musical mexicana actual?",o:["Carlos Chávez y Silvestre Revueltas","Julio Estrada y Gabriela Ortiz","Manuel M. Ponce y Julián Carrillo"],c:1}
+  ]
+};
+
+/* ============================================================
+   DATOS DE LOS NIVELES
+   ============================================================ */
+const NIVELES = {
+  1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco",
+     narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.",
+     fondo:"fondos/01-edad-media.jpg",avatar:"avatar/auri-01.png"},
+  2:{nombre:"Renacimiento",titulo:"🎨 Nivel 2: El Despertar de las Voces",
+     narrativa:"Año 1500. Florencia te recibe con luz dorada. El humanismo florece, las voces se entrelazan en polifonía y la imprenta difunde las partituras. Demuestra tu conocimiento del Renacimiento.",
+     fondo:"fondos/02-renacimiento.jpg",avatar:"avatar/auri-02.png"},
+  3:{nombre:"Barroco",titulo:"👑 Nivel 3: El Palacio del Contrapunto",
+     narrativa:"Año 1680. Un palacio de terciopelo y oro se abre ante ti. El bajo continuo retumba, las fugas se enredan y la ópera nace. Bach, Vivaldi y Handel te observan. Supera sus pruebas.",
+     fondo:"fondos/03-barroco.jpg",avatar:"avatar/auri-03.png"},
+  4:{nombre:"Clasicismo",titulo:"🏛️ Nivel 4: El Templo de la Razón",
+     narrativa:"Año 1780. Columnas blancas y cielos azules. La simetría y el equilibrio reinan. Mozart, Haydn y el joven Beethoven te esperan en el templo de la razón musical.",
+     fondo:"fondos/04-clasicismo.jpg",avatar:"avatar/auri-04.png"},
+  5:{nombre:"Romanticismo",titulo:"🌹 Nivel 5: El Jardín de las Pasiones",
+     narrativa:"Año 1850. La luna se refleja en un lago. Un piano de cola espera bajo un sauce llorón. Las emociones desbordan las formas. Chopin, Schumann y Wagner te desafían.",
+     fondo:"fondos/05-romanticismo.jpg",avatar:"avatar/auri-05.png"},
+  6:{nombre:"Siglo XX y XXI",titulo:"⚡ Nivel 6: El Laboratorio del Futuro",
+     narrativa:"Año 2026. Neón, sintetizadores y algoritmos. La música se ha transformado en ondas eléctricas e inteligencia artificial. Demuestra que comprendes el presente y el futuro del sonido.",
+     fondo:"fondos/06-sxx-xxi.jpg",avatar:"avatar/auri-06.png"}
+};
+
+/* ============================================================
+   ESTADO DEL JUEGO
+   ============================================================ */
+let estado = {
+  nombre:"",
+  nivelActual:1,
+  puntos:0,
+  preguntasNivel:[], // 3 preguntas seleccionadas
+  indicePregunta:0,
+  fallosEnPregunta:0
+};
+
+/* ============================================================
+   FUNCIONES PRINCIPALES
+   ============================================================ */
+function mostrarPantalla(id){
+  document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa'));
+  document.getElementById(id).classList.add('activa');
+}
+
+function iniciarJuego(){
+  const nombre = document.getElementById('nombre-estudiante').value.trim();
+  if(!nombre){
+    alert('Por favor, escribe tu nombre para comenzar la aventura.');
+    return;
+  }
+  estado.nombre = nombre;
+  document.getElementById('hud').style.display='block';
+  document.getElementById('avatar-container').style.display='block';
+  cargarNivel(1);
+}
+
+function cargarNivel(n){
+  estado.nivelActual = n;
+  const nivel = NIVELES[n];
+  
+  // Cambiar fondo y avatar
+  document.getElementById('fondo-dinamico').style.backgroundImage = `url('${nivel.fondo}')`;
+  document.getElementById('avatar-img').src = nivel.avatar;
+  
+  // Actualizar HUD
+  document.getElementById('hud-nivel').textContent = `Nivel ${n}`;
+  document.getElementById('hud-periodo').textContent = nivel.nombre;
+  
+  // Mostrar narrativa
+  document.getElementById('narrativa-titulo').textContent = nivel.titulo;
+  document.getElementById('narrativa-texto').textContent = nivel.narrativa;
+  mostrarPantalla('pantalla-narrativa');
+}
+
+function iniciarNivel(){
+  // Seleccionar 3 preguntas aleatorias del banco
+  const banco = BANCO[estado.nivelActual];
+  const copia = [...banco];
+  estado.preguntasNivel = [];
+  for(let i=0;i<3;i++){
+    const idx = Math.floor(Math.random()*copia.length);
+    estado.preguntasNivel.push(copia.splice(idx,1)[0]);
+  }
+  estado.indicePregunta = 0;
+  estado.fallosEnPregunta = 0;
+  
+  // Activar avatar caminando brevemente
+  const caminante = document.getElementById('avatar-caminando');
+  caminante.style.display='block';
+  caminante.style.left='10px';
+  setTimeout(()=>{
+    caminante.style.left='calc(100% - 120px)';
+  },50);
+  setTimeout(()=>{
+    caminante.style.display='none';
+    mostrarPregunta();
+  },2000);
+}
+
+function mostrarPregunta(){
+  const p = estado.preguntasNivel[estado.indicePregunta];
+  document.getElementById('pregunta-titulo').textContent = NIVELES[estado.nivelActual].titulo;
+  document.getElementById('pregunta-texto').textContent = p.q;
+  document.getElementById('hud-pregunta').textContent = estado.indicePregunta+1;
+  document.getElementById('hud-puntos').textContent = estado.puntos;
+  
+  const cont = document.getElementById('opciones');
+  cont.innerHTML='';
+  p.o.forEach((op,i)=>{
+    const btn = document.createElement('button');
+    btn.className='opcion';
+    btn.textContent = op;
+    btn.onclick = ()=>responder(i,btn);
+    cont.appendChild(btn);
+  });
+  
+  document.getElementById('feedback').style.display='none';
+  document.getElementById('btn-siguiente').style.display='none';
+  mostrarPantalla('pantalla-preguntas');
+}
+
+function responder(idx,btn){
+  const p = estado.preguntasNivel[estado.indicePregunta];
+  const feedback = document.getElementById('feedback');
+  const todasOpciones = document.querySelectorAll('.opcion');
+  
+  if(idx === p.c){
+    // Correcta
+    btn.classList.add('correcta');
+    todasOpciones.forEach(o=>o.classList.add('deshabilitada'));
+    estado.puntos += 10;
+    document.getElementById('hud-puntos').textContent = estado.puntos;
+    feedback.className='ok';
+    feedback.textContent = '✅ ¡Correcto! +10 puntos';
+    feedback.style.display='block';
+    document.getElementById('btn-siguiente').style.display='inline-block';
+  } else {
+    // Incorrecta
+    btn.classList.add('incorrecta');
+    btn.classList.add('deshabilitada');
+    estado.fallosEnPregunta++;
+    
+    if(estado.fallosEnPregunta >= 2){
+      // Mostrar pista
+      feedback.className='pista';
+      feedback.innerHTML = `💡 <strong>Fragmento de Sabiduría:</strong> La respuesta correcta es la opción <strong>${String.fromCharCode(65+p.c)}</strong>. Revisa tus apuntes de este periodo antes de continuar.`;
+      feedback.style.display='block';
+      // Marcar la correcta
+      todasOpciones[p.c].classList.add('correcta');
+      todasOpciones.forEach(o=>o.classList.add('deshabilitada'));
+      document.getElementById('btn-siguiente').style.display='inline-block';
+    } else {
+      feedback.className='mal';
+      feedback.textContent = `❌ Incorrecto. Te queda ${2-estado.fallosEnPregunta} intento(s). ¡Piénsalo bien!`;
+      feedback.style.display='block';
+    }
+  }
+}
+
+function siguientePregunta(){
+  estado.indicePregunta++;
+  estado.fallosEnPregunta = 0;
+  
+  if(estado.indicePregunta >= 3){
+    // Fin del nivel
+    if(estado.nivelActual < 6){
+      // Vórtice de transición
+      const vortice = document.getElementById('vortice');
+      document.getElementById('vortice-texto').textContent = `Viajando al ${NIVELES[estado.nivelActual+1].nombre}...`;
+      vortice.classList.add('activo');
+      setTimeout(()=>{
+        vortice.classList.remove('activo');
+        cargarNivel(estado.nivelActual+1);
+      },2000);
+    } else {
+      // Fin del juego → diploma
+      mostrarDiploma();
+    }
+  } else {
+    mostrarPregunta();
+  }
+}
+
+function mostrarDiploma(){
+  document.getElementById('hud').style.display='none';
+  document.getElementById('avatar-container').style.display='none';
+  document.getElementById('fondo-dinamico').style.backgroundImage='none';
+  document.getElementById('fondo-dinamico').style.background='linear-gradient(135deg,var(--azul-noche),var(--azul-medio))';
+  
+  document.getElementById('diploma-nombre').textContent = estado.nombre;
+  document.getElementById('diploma-puntos').textContent = estado.puntos;
+  
+  let rango = 'APRENDIZ';
+  if(estado.puntos >= 150) rango = 'LEYENDA SONORA';
+  else if(estado.puntos >= 120) rango = 'MAESTRO DEL TIEMPO';
+  else if(estado.puntos >= 90) rango = 'CRONISTA EXPERTO';
+  else if(estado.puntos >= 60) rango = 'CRONISTA';
+  document.getElementById('diploma-rango').textContent = rango;
+  
+  mostrarPantalla('pantalla-diploma');
+}
+</script>
+</body>
+</html>
