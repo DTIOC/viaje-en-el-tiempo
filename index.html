@@ -19,325 +19,106 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%;font-family:'Georgia',serif;background:var(--azul-noche);color:var(--texto);overflow:hidden}
   
-  /* ===== PANTALLAS ===== */
-  .pantalla{
-    position:fixed;inset:0;display:none;
-    background:transparent !important;
-    overflow-y:auto;
-  }
+  .pantalla{position:fixed;inset:0;display:none;background:transparent !important;overflow-y:auto;}
   .pantalla.activa{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
   
-  /* ===== COLLAGE DE FONDO ===== */
-  #collage-fondo {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 0;
-  }
-  #collage-fondo .img-collage {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.5s ease;
-  }
-  #collage-fondo::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(15, 27, 61, 0.75);
-    z-index: 1;
-  }
-  #collage-fondo .img-collage:hover {
-    transform: scale(1.05);
-    filter: brightness(1.2);
-  }
-  @media (max-width: 768px) {
-    #collage-fondo {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-    }
-  }
-  @media (max-width: 480px) {
-    #collage-fondo {
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(6, 1fr);
-    }
-  }
+  #collage-fondo {position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 0;display: grid;grid-template-columns: repeat(3, 1fr);grid-template-rows: repeat(2, 1fr);gap: 0;}
+  #collage-fondo .img-collage {width: 100%;height: 100%;object-fit: cover;display: block;transition: transform 0.5s ease;}
+  #collage-fondo::after {content: '';position: absolute;top: 0;left: 0;width: 100%;height: 100%;background: rgba(15, 27, 61, 0.75);z-index: 1;}
+  #collage-fondo .img-collage:hover {transform: scale(1.05);filter: brightness(1.2);}
+  @media (max-width: 768px) {#collage-fondo {grid-template-columns: repeat(2, 1fr);grid-template-rows: repeat(3, 1fr);}}
+  @media (max-width: 480px) {#collage-fondo {grid-template-columns: 1fr;grid-template-rows: repeat(6, 1fr);}}
   
-  /* ===== FONDO DINÁMICO ===== */
   #fondo-dinamico{
-    position:fixed !important;
-    top:0 !important;
-    left:0 !important;
-    width:100% !important;
-    height:100% !important;
-    z-index:0 !important;
-    background-size:cover !important;
-    background-position:center !important;
+    position:fixed !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;z-index:0 !important;
+    background-size: 110% 110% !important; 
+    background-position: 50% 50% !important; 
     background-repeat:no-repeat !important;
-    transition:opacity 1s;
+    transition: opacity 1s, background-position 0.1s ease-out; 
     display:none;
   }
-  #fondo-dinamico::after{
-    content:'' !important;
-    position:absolute !important;
-    top:0 !important;
-    left:0 !important;
-    width:100% !important;
-    height:100% !important;
-    background:rgba(15,27,61,0.2) !important;
-    z-index:1 !important;
-  }
+  #fondo-dinamico::after{content:'' !important;position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(15,27,61,0.2) !important;z-index:1 !important;}
   .contenido{position:relative;z-index:2;width:100%;max-width:900px;padding:20px}
   
-  /* ===== PERGAMINO ===== */
-  .pergamino{
-    background:var(--pergamino);
-    border:3px solid var(--dorado);
-    border-radius:8px;
-    padding:30px;
-    box-shadow:0 0 30px rgba(212,175,55,0.4), inset 0 0 40px rgba(139,26,26,0.08);
-    position:relative;
-    z-index:3;
-  }
-  .pergamino::before,.pergamino::after{
-    content:'';position:absolute;width:40px;height:40px;
-    border:3px solid var(--dorado);
-  }
+  .pergamino{background:var(--pergamino);border:3px solid var(--dorado);border-radius:8px;padding:30px;box-shadow:0 0 30px rgba(212,175,55,0.4), inset 0 0 40px rgba(139,26,26,0.08);position:relative;z-index:3;}
+  .pergamino::before,.pergamino::after{content:'';position:absolute;width:40px;height:40px;border:3px solid var(--dorado);}
   .pergamino::before{top:8px;left:8px;border-right:none;border-bottom:none}
   .pergamino::after{bottom:8px;right:8px;border-left:none;border-top:none}
   
-  /* ===== TIPOGRAFÍA ===== */
   h1{font-size:2.2em;color:var(--rojo);text-align:center;margin-bottom:15px;text-shadow:1px 1px 0 var(--dorado-claro)}
   h2{font-size:1.6em;color:var(--azul-medio);margin-bottom:15px;text-align:center}
   h3{font-size:1.3em;color:var(--rojo);margin:15px 0 10px}
   p{line-height:1.6;margin-bottom:12px;font-size:1.05em}
   
-  /* ===== BOTONES ===== */
-  .btn{
-    background:linear-gradient(135deg,var(--dorado),var(--dorado-claro));
-    color:var(--azul-noche);
-    border:2px solid var(--rojo);
-    padding:12px 28px;
-    font-size:1.1em;font-weight:bold;
-    border-radius:6px;cursor:pointer;
-    font-family:inherit;
-    transition:transform .15s, box-shadow .15s;
-    margin:8px 4px;
-  }
+  .btn{background:linear-gradient(135deg,var(--dorado),var(--dorado-claro));color:var(--azul-noche);border:2px solid var(--rojo);padding:12px 28px;font-size:1.1em;font-weight:bold;border-radius:6px;cursor:pointer;font-family:inherit;transition:transform .15s, box-shadow .15s;margin:8px 4px;}
   .btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(212,175,55,0.6)}
   .btn:active{transform:translateY(0)}
   .btn-secundario{background:var(--pergamino-oscuro)}
   
-  /* ===== INPUT ===== */
-  input[type="text"]{
-    width:100%;max-width:400px;
-    padding:12px;font-size:1.1em;
-    border:2px solid var(--dorado);
-    border-radius:6px;
-    background:var(--pergamino);
-    font-family:inherit;
-    text-align:center;
-    margin:15px auto;display:block;
-  }
+  input[type="text"]{width:100%;max-width:400px;padding:12px;font-size:1.1em;border:2px solid var(--dorado);border-radius:6px;background:var(--pergamino);font-family:inherit;text-align:center;margin:15px auto;display:block;}
   input[type="text"]:focus{outline:none;border-color:var(--rojo);box-shadow:0 0 10px var(--dorado)}
   
-  /* ===== AVATAR ===== */
-  #avatar-container{
-    position:fixed;bottom:10px;left:10px;z-index:4;
-    width:120px;height:200px;
-    pointer-events:none;
-  }
-  #avatar-img{
-    width:100%;height:100%;
-    object-fit:contain;
-    filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));
-    transition:opacity .6s;
-  }
-  #avatar-caminando{
-    position:fixed;bottom:10px;left:10px;z-index:4;
-    width:120px;height:180px;
-    background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;
-    background-size: 400% 100% !important;
-    background-repeat:no-repeat !important;
-    animation:caminar 6s steps(4) infinite;
-    filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));
-    display:none;
-  }
-  @keyframes caminar{
-    from{background-position:0 0}
-    to{background-position:-300% 0}
-  }
+  #avatar-container{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:200px;pointer-events:none;}
+  #avatar-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));transition:opacity .6s;}
+  #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 6s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
+  @keyframes caminar{from{background-position:0 0}to{background-position:-300% 0}}
   
-  /* ===== HUD ===== */
-  #hud{
-    position:fixed;top:10px;right:10px;z-index:5;
-    background:rgba(15,27,61,0.9);
-    border:2px solid var(--dorado);
-    border-radius:8px;
-    padding:10px 15px;
-    color:var(--dorado-claro);
-    font-size:0.95em;
-    box-shadow:0 0 15px rgba(212,175,55,0.3);
-  }
+  #hud{position:fixed;top:10px;right:10px;z-index:5;background:rgba(15,27,61,0.9);border:2px solid var(--dorado);border-radius:8px;padding:10px 15px;color:var(--dorado-claro);font-size:0.95em;box-shadow:0 0 15px rgba(212,175,55,0.3);}
   #hud div{margin:3px 0}
-  .nivel-badge{
-    display:inline-block;
-    background:var(--rojo);color:var(--pergamino);
-    padding:2px 8px;border-radius:4px;
-    font-weight:bold;margin-right:5px;
-  }
+  .nivel-badge{display:inline-block;background:var(--rojo);color:var(--pergamino);padding:2px 8px;border-radius:4px;font-weight:bold;margin-right:5px;}
   
-  /* ===== PREGUNTAS ===== */
   .pregunta{font-size:1.2em;font-weight:bold;margin-bottom:20px;color:var(--azul-noche)}
   .opciones{display:flex;flex-direction:column;gap:10px}
-  .opcion{
-    background:var(--pergamino-oscuro);
-    border:2px solid var(--dorado);
-    padding:12px 18px;
-    border-radius:6px;
-    cursor:pointer;
-    text-align:left;
-    font-size:1em;font-family:inherit;
-    transition:all .2s;
-  }
+  .opcion{background:var(--pergamino-oscuro);border:2px solid var(--dorado);padding:12px 18px;border-radius:6px;cursor:pointer;text-align:left;font-size:1em;font-family:inherit;transition:all .2s;}
   .opcion:hover{background:var(--dorado-claro);transform:translateX(5px)}
   .opcion.correcta{background:#7fbf7f;border-color:var(--verde);color:#fff}
   .opcion.incorrecta{background:#d97070;border-color:var(--rojo);color:#fff}
   .opcion.deshabilitada{pointer-events:none;opacity:0.6}
   
-  /* ===== FEEDBACK ===== */
-  #feedback{
-    margin-top:15px;padding:12px;
-    border-radius:6px;
-    font-weight:bold;
-    display:none;
-  }
+  #feedback{margin-top:15px;padding:12px;border-radius:6px;font-weight:bold;display:none;}
   #feedback.ok{background:#c8e6c9;color:#1b5e20;border:2px solid var(--verde)}
   #feedback.mal{background:#ffcdd2;color:#b71c1c;border:2px solid var(--rojo)}
   #feedback.pista{background:#fff9c4;color:#7c5e00;border:2px solid var(--dorado)}
   
-  /* ===== DIPLOMA ===== */
-  #diploma{
-    background:var(--pergamino);
-    border:8px double var(--dorado);
-    padding:40px;
-    text-align:center;
-    box-shadow:0 0 40px rgba(212,175,55,0.6);
-    max-width:600px;
-    margin:20px auto;
-  }
+  #diploma{background:var(--pergamino);border:8px double var(--dorado);padding:40px;text-align:center;box-shadow:0 0 40px rgba(212,175,55,0.6);max-width:600px;margin:20px auto;}
   #diploma h1{font-size:2.5em;color:var(--rojo);margin-bottom:20px}
   #diploma .nombre{font-size:1.8em;color:var(--azul-medio);font-style:italic;margin:20px 0;border-bottom:2px solid var(--dorado);padding-bottom:10px}
   #diploma .texto{font-size:1.1em;margin:20px 0}
   #diploma .puntuacion{font-size:1.4em;color:var(--dorado);font-weight:bold;margin:20px 0}
-  .sello{
-    display:inline-block;
-    width:100px;height:100px;
-    border:4px solid var(--rojo);
-    border-radius:50%;
-    line-height:92px;
-    color:var(--rojo);
-    font-weight:bold;
-    font-size:0.9em;
-    margin-top:20px;
-    transform:rotate(-15deg);
-  }
+  .sello{display:inline-block;width:100px;height:100px;border:4px solid var(--rojo);border-radius:50%;line-height:92px;color:var(--rojo);font-weight:bold;font-size:0.9em;margin-top:20px;transform:rotate(-15deg);}
   
-  /* ===== REPORTE DE RESPUESTAS ===== */
-  #reporte{
-    background:var(--pergamino);
-    border:3px solid var(--dorado);
-    padding:30px;
-    max-width:700px;
-    margin:20px auto;
-    text-align:left;
-  }
+  #reporte{background:var(--pergamino);border:3px solid var(--dorado);padding:30px;max-width:700px;margin:20px auto;text-align:left;}
   #reporte h2{color:var(--rojo);text-align:center;margin-bottom:20px}
-  .periodo-resumen{
-    margin-bottom:20px;
-    padding:15px;
-    background:rgba(255,255,255,0.3);
-    border-radius:6px;
-    border-left:4px solid var(--dorado);
-  }
+  .periodo-resumen{margin-bottom:20px;padding:15px;background:rgba(255,255,255,0.3);border-radius:6px;border-left:4px solid var(--dorado);}
   .periodo-resumen h3{color:var(--azul-medio);margin-bottom:10px}
-  .respuesta-item{
-    margin:8px 0;
-    padding:8px;
-    background:rgba(255,255,255,0.5);
-    border-radius:4px;
-    font-size:0.95em;
-  }
+  .respuesta-item{margin:8px 0;padding:8px;background:rgba(255,255,255,0.5);border-radius:4px;font-size:0.95em;}
   .respuesta-item.correcta{border-left:3px solid var(--verde)}
   .respuesta-item.incorrecta{border-left:3px solid var(--rojo)}
   
-  /* ===== VÓRTICE ===== */
-  #vortice{
-    position:fixed;inset:0;z-index:10;
-    background:radial-gradient(circle, #fff 0%, var(--azul-medio) 40%, #000 100%);
-    display:none;
-    align-items:center;justify-content:center;
-    animation:vortice-anim 2s ease-in-out;
-  }
+  #vortice{position:fixed;inset:0;z-index:10;background:radial-gradient(circle, #fff 0%, var(--azul-medio) 40%, #000 100%);display:none;align-items:center;justify-content:center;animation:vortice-anim 2s ease-in-out;}
   #vortice.activo{display:flex}
-  #vortice span{
-    font-size:3em;color:var(--dorado-claro);
-    text-shadow:0 0 20px var(--dorado);
-    animation:pulse 1s infinite;
-  }
-  @keyframes vortice-anim{
-    0%{opacity:0}
-    50%{opacity:1}
-    100%{opacity:0}
-  }
-  @keyframes pulse{
-    0%,100%{transform:scale(1)}
-    50%{transform:scale(1.1)}
-  }
+  #vortice span{font-size:3em;color:var(--dorado-claro);text-shadow:0 0 20px var(--dorado);animation:pulse 1s infinite;}
+  @keyframes vortice-anim{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-  /* ===== IMPRESIÓN / PDF ===== */
   @media print {
     body * { visibility: hidden; }
     #pantalla-diploma, #pantalla-diploma *, #pantalla-reporte, #pantalla-reporte * { visibility: visible; }
-    #pantalla-diploma, #pantalla-reporte {
-      position: relative;
-      background: white !important;
-      display: block;
-      page-break-after: always;
-    }
+    #pantalla-diploma, #pantalla-reporte {position: relative;background: white !important;display: block;page-break-after: always;}
     #diploma, #reporte { box-shadow: none !important; border: 4px double var(--dorado) !important; margin: 20px auto; }
     .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice, #btn-mute, #collage-fondo { display: none !important; }
   }
   
-  /* ===== RESPONSIVE ===== */
   @media(max-width:600px){
-    h1{font-size:1.6em}
-    h2{font-size:1.2em}
-    .pergamino{padding:20px}
-    #avatar-container{width:80px;height:140px}
-    #avatar-caminando{width:80px;height:130px}
-    #hud{font-size:0.8em;padding:8px 10px}
-    #diploma{padding:20px}
-    #diploma h1{font-size:1.8em}
-    #btn-mute{width:40px;height:40px;font-size:1.2em;bottom:10px;right:10px}
-    #reporte{padding:15px}
+    h1{font-size:1.6em} h2{font-size:1.2em} .pergamino{padding:20px}
+    #avatar-container{width:80px;height:140px} #avatar-caminando{width:80px;height:130px}
+    #hud{font-size:0.8em;padding:8px 10px} #diploma{padding:20px} #diploma h1{font-size:1.8em}
+    #btn-mute{width:40px;height:40px;font-size:1.2em;bottom:10px;right:10px} #reporte{padding:15px}
   }
 </style>
 </head>
 <body>
 
-<!-- COLLAGE DE FONDO -->
 <div id="collage-fondo">
   <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg" alt="Edad Media">
   <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo2.jpg" alt="Renacimiento">
@@ -347,34 +128,20 @@
   <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg" alt="Siglo XX y XXI">
 </div>
 
-<!-- REPRODUCTOR DE AUDIO OCULTO -->
 <audio id="musica-fondo" loop></audio>
-
-<!-- BOTÓN DE SILENCIAR -->
 <button id="btn-mute" onclick="toggleMute()" style="position:fixed; bottom:10px; right:10px; z-index:5; background:var(--azul-noche); color:var(--dorado); border:2px solid var(--dorado); border-radius:50%; width:50px; height:50px; font-size:1.5em; cursor:pointer; box-shadow:0 0 10px rgba(0,0,0,0.5);" title="Silenciar/Activar música">🔊</button>
 
-<!-- HUD -->
 <div id="hud" style="display:none">
   <div><span class="nivel-badge" id="hud-nivel">Nivel 1</span> <span id="hud-periodo">Edad Media</span></div>
   <div>⭐ Puntos: <span id="hud-puntos">0</span></div>
   <div>❓ Pregunta: <span id="hud-pregunta">1</span>/3</div>
 </div>
 
-<!-- AVATAR FIJO -->
-<div id="avatar-container" style="display:none">
-  <img id="avatar-img" src="" alt="Avatar">
-</div>
-
-<!-- AVATAR CAMINANDO -->
+<div id="avatar-container" style="display:none"><img id="avatar-img" src="" alt="Avatar"></div>
 <div id="avatar-caminando"></div>
-
-<!-- FONDO DINÁMICO -->
 <div id="fondo-dinamico"></div>
-
-<!-- VÓRTICE DE TRANSICIÓN -->
 <div id="vortice"><span id="vortice-texto">Viajando en el tiempo...</span></div>
 
-<!-- PANTALLA 1: INICIO -->
 <div class="pantalla activa" id="pantalla-inicio">
   <div class="contenido">
     <div class="pergamino">
@@ -383,33 +150,24 @@
       <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
       <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
       <h3>📜 Reglas del juego</h3>
-      <p>• Cada nivel tiene <strong>3 preguntas aleatorias</strong> de un banco de 15.<br>
-         • Ganas <strong>10 puntos</strong> por cada respuesta correcta.<br>
-         • Si fallas 2 veces en la misma pregunta, recibirás una <strong>pista</strong> antes de reintentar.<br>
-         • Al final obtendrás un <strong>diploma personalizado</strong> con tu reporte de respuestas.</p>
+      <p>• Cada nivel tiene <strong>3 preguntas aleatorias</strong> de un banco de 15.<br>• Ganas <strong>10 puntos</strong> por cada respuesta correcta.<br>• Si fallas 2 veces en la misma pregunta, recibirás una <strong>pista</strong> antes de reintentar.<br>• Al final obtendrás un <strong>diploma personalizado</strong> con tu reporte de respuestas.</p>
       <p style="text-align:center;margin-top:20px"><strong>¿Aceptas la misión?</strong></p>
       <input type="text" id="nombre-estudiante" placeholder="Escribe tu nombre completo" maxlength="40">
-      <div style="text-align:center">
-        <button class="btn" onclick="iniciarJuego()"> Comenzar la aventura</button>
-      </div>
+      <div style="text-align:center"><button class="btn" onclick="iniciarJuego()">🚀 Comenzar la aventura</button></div>
     </div>
   </div>
 </div>
 
-<!-- PANTALLA 2: NARRATIVA -->
 <div class="pantalla" id="pantalla-narrativa">
   <div class="contenido">
     <div class="pergamino">
       <h2 id="narrativa-titulo"></h2>
       <p id="narrativa-texto"></p>
-      <div style="text-align:center">
-        <button class="btn" onclick="iniciarNivel()">⚔️ Entrar al reino</button>
-      </div>
+      <div style="text-align:center"><button class="btn" onclick="iniciarNivel()">⚔️ Entrar al reino</button></div>
     </div>
   </div>
 </div>
 
-<!-- PANTALLA 3: PREGUNTAS -->
 <div class="pantalla" id="pantalla-preguntas">
   <div class="contenido">
     <div class="pergamino">
@@ -417,28 +175,22 @@
       <div class="pregunta" id="pregunta-texto"></div>
       <div class="opciones" id="opciones"></div>
       <div id="feedback"></div>
-      <div style="text-align:center;margin-top:15px">
-        <button class="btn" id="btn-siguiente" style="display:none" onclick="siguientePregunta()">Siguiente ➡️</button>
-      </div>
+      <div style="text-align:center;margin-top:15px"><button class="btn" id="btn-siguiente" style="display:none" onclick="siguientePregunta()">Siguiente ➡️</button></div>
     </div>
   </div>
 </div>
 
-<!-- PANTALLA 4: REPORTE -->
 <div class="pantalla" id="pantalla-reporte">
   <div class="contenido">
     <div id="reporte">
       <h2>📋 Reporte de Cronista</h2>
       <p style="text-align:center;margin-bottom:20px"><strong>Estudiante:</strong> <span id="reporte-nombre"></span></p>
       <div id="reporte-contenido"></div>
-      <div style="text-align:center;margin-top:20px">
-        <button class="btn" onclick="mostrarDiploma()">🏆 Ver Diploma</button>
-      </div>
+      <div style="text-align:center;margin-top:20px"><button class="btn" onclick="mostrarDiploma()">🏆 Ver Diploma</button></div>
     </div>
   </div>
 </div>
 
-<!-- PANTALLA 5: DIPLOMA -->
 <div class="pantalla" id="pantalla-diploma">
   <div class="contenido">
     <div id="diploma">
@@ -459,9 +211,6 @@
 </div>
 
 <script>
-/* ============================================================
-   BANCO DE 90 PREGUNTAS (15 por nivel)
-   ============================================================ */
 const BANCO = {
   1: [
     {q:"¿Qué institución ejercía el mayor control social y cultural durante la mayor parte de la Edad Media?",o:["Los gremios de comerciantes","La Iglesia y los monasterios","Los reyes y la nobleza laica"],c:1},
@@ -568,57 +317,22 @@ const BANCO = {
 };
 
 const NIVELES = {
-  1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco",
-     narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.",
-     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio1.mp3",
-     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-01.png"},
-  2:{nombre:"Renacimiento",titulo:" Nivel 2: El Despertar de las Voces",
-     narrativa:"Año 1500. Florencia te recibe con luz dorada. El humanismo florece, las voces se entrelazan en polifonía y la imprenta difunde las partituras. Demuestra tu conocimiento del Renacimiento.",
-     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio2.mp3",
-     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo2.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-02.png"},
-  3:{nombre:"Barroco",titulo:"👑 Nivel 3: El Palacio del Contrapunto",
-     narrativa:"Año 1680. Un palacio de terciopelo y oro se abre ante ti. El bajo continuo retumba, las fugas se enredan y la ópera nace. Bach, Vivaldi y Handel te observan. Supera sus pruebas.",
-     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio3.mp3",
-     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo3.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-03.png"},
-  4:{nombre:"Clasicismo",titulo:"🏛️ Nivel 4: El Templo de la Razón",
-     narrativa:"Año 1780. Columnas blancas y cielos azules. La simetría y el equilibrio reinan. Mozart, Haydn y el joven Beethoven te esperan en el templo de la razón musical.",
-     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio4.mp3",
-     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo4.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-04.png"},
-  5:{nombre:"Romanticismo",titulo:"🌹 Nivel 5: El Jardín de las Pasiones",
-     narrativa:"Año 1850. La luna se refleja en un lago. Un piano de cola espera bajo un sauce llorón. Las emociones desbordan las formas. Chopin, Schumann y Wagner te desafían.",
-     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio5.mp3",
-     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo5.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-05.png"},
-  6:{nombre:"Siglo XX y XXI",titulo:"⚡ Nivel 6: El Laboratorio del Futuro",
-     narrativa:"Año 2026. Neón, sintetizadores y algoritmos. La música se ha transformado en ondas eléctricas e inteligencia artificial. Demuestra que comprendes el presente y el futuro del sonido.",
-     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio6.mp3",
-     fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-06.png"}
+  1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco", narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio1.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-01.png"},
+  2:{nombre:"Renacimiento",titulo:"🎨 Nivel 2: El Despertar de las Voces", narrativa:"Año 1500. Florencia te recibe con luz dorada. El humanismo florece, las voces se entrelazan en polifonía y la imprenta difunde las partituras. Demuestra tu conocimiento del Renacimiento.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio2.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo2.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-02.png"},
+  3:{nombre:"Barroco",titulo:"👑 Nivel 3: El Palacio del Contrapunto", narrativa:"Año 1680. Un palacio de terciopelo y oro se abre ante ti. El bajo continuo retumba, las fugas se enredan y la ópera nace. Bach, Vivaldi y Handel te observan. Supera sus pruebas.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio3.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo3.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-03.png"},
+  4:{nombre:"Clasicismo",titulo:"🏛️ Nivel 4: El Templo de la Razón", narrativa:"Año 1780. Columnas blancas y cielos azules. La simetría y el equilibrio reinan. Mozart, Haydn y el joven Beethoven te esperan en el templo de la razón musical.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio4.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo4.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-04.png"},
+  5:{nombre:"Romanticismo",titulo:"🌹 Nivel 5: El Jardín de las Pasiones", narrativa:"Año 1850. La luna se refleja en un lago. Un piano de cola espera bajo un sauce llorón. Las emociones desbordan las formas. Chopin, Schumann y Wagner te desafían.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio5.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo5.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-05.png"},
+  6:{nombre:"Siglo XX y XXI",titulo:"⚡ Nivel 6: El Laboratorio del Futuro", narrativa:"Año 2026. Neón, sintetizadores y algoritmos. La música se ha transformado en ondas eléctricas e inteligencia artificial. Demuestra que comprendes el presente y el futuro del sonido.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio6.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-06.png"}
 };
 
-let estado = {
-  nombre:"",
-  nivelActual:1,
-  puntos:0,
-  preguntasNivel:[],
-  indicePregunta:0,
-  fallosEnPregunta:0,
-  respuestasPorNivel: {} 
-};
-
+let estado = {nombre:"", nivelActual:1, puntos:0, preguntasNivel:[], indicePregunta:0, fallosEnPregunta:0, respuestasPorNivel: {}};
 let estaMuteado = false;
 
-/* ============================================================
-   FUNCIONES DE AUDIO
-   ============================================================ */
 function toggleMute() {
   const audioPlayer = document.getElementById('musica-fondo');
   const btn = document.getElementById('btn-mute');
-  if (estaMuteado) {
-    audioPlayer.muted = false;
-    btn.textContent = '🔊';
-  } else {
-    audioPlayer.muted = true;
-    btn.textContent = '🔇';
-  }
+  if (estaMuteado) { audioPlayer.muted = false; btn.textContent = '🔊'; } 
+  else { audioPlayer.muted = true; btn.textContent = '🔇'; }
   estaMuteado = !estaMuteado;
 }
 
@@ -626,15 +340,12 @@ function reproducirAudioNivel(nivel) {
   const audioPlayer = document.getElementById('musica-fondo');
   if (nivel && nivel.audio) {
     let fadeOut = setInterval(() => {
-      if (audioPlayer.volume > 0.1) {
-        audioPlayer.volume -= 0.1;
-      } else {
+      if (audioPlayer.volume > 0.1) { audioPlayer.volume -= 0.1; } 
+      else {
         clearInterval(fadeOut);
         audioPlayer.src = nivel.audio;
         audioPlayer.volume = 0.3;
-        audioPlayer.play().catch(error => {
-          console.log("Reproducción automática bloqueada:", error);
-        });
+        audioPlayer.play().catch(error => { console.log("Reproducción automática bloqueada:", error); });
       }
     }, 100);
   }
@@ -648,33 +359,23 @@ function detenerAudio() {
 
 window.addEventListener('DOMContentLoaded', () => {
   const audioPlayer = document.getElementById('musica-fondo');
-  const introURL = 'https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio-intro.mp3';
-  
-  audioPlayer.src = introURL;
+  audioPlayer.src = 'https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio-intro.mp3';
   audioPlayer.volume = 0.4;
   audioPlayer.loop = true; 
-  
   const playPromise = audioPlayer.play();
   if (playPromise !== undefined) {
     playPromise.catch(error => {
       const unlockAudio = () => {
-        audioPlayer.play().then(() => {
-            console.log("Audio desbloqueado tras interacción");
-        }).catch(e => console.error("Error al intentar reproducir tras click", e));
-        
+        audioPlayer.play().catch(e => console.error("Error al intentar reproducir tras click", e));
         document.removeEventListener('click', unlockAudio);
         document.removeEventListener('touchstart', unlockAudio);
       };
-      
       document.addEventListener('click', unlockAudio, { once: true });
       document.addEventListener('touchstart', unlockAudio, { once: true });
     });
   }
 });
 
-/* ============================================================
-   FUNCIONES PRINCIPALES
-   ============================================================ */
 function mostrarPantalla(id){
   document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa'));
   document.getElementById(id).classList.add('activa');
@@ -682,19 +383,13 @@ function mostrarPantalla(id){
 
 function iniciarJuego(){
   const nombre = document.getElementById('nombre-estudiante').value.trim();
-  if(!nombre){
-    alert('Por favor, escribe tu nombre para comenzar la aventura.');
-    return;
-  }
+  if(!nombre){ alert('Por favor, escribe tu nombre para comenzar la aventura.'); return; }
   estado.nombre = nombre;
   estado.respuestasPorNivel = {}; 
-  
   document.getElementById('collage-fondo').style.display = 'none';
   document.getElementById('fondo-dinamico').style.display = 'block';
-  
   document.getElementById('hud').style.display='block';
   document.getElementById('avatar-container').style.display='block';
-  
   detenerAudio();
   cargarNivel(1);
 }
@@ -702,30 +397,18 @@ function iniciarJuego(){
 function cargarNivel(n){
   estado.nivelActual = n;
   const nivel = NIVELES[n];
-  
   const fondoDiv = document.getElementById('fondo-dinamico');
   fondoDiv.style.cssText = `
-    position:fixed !important;
-    top:0 !important;
-    left:0 !important;
-    width:100% !important;
-    height:100% !important;
-    z-index:0 !important;
-    display:block !important;
-    background-image:url('${nivel.fondo}') !important;
-    background-size:cover !important;
-    background-position:center !important;
-    background-repeat:no-repeat !important;
+    position:fixed !important; top:0 !important; left:0 !important; width:100% !important; height:100% !important;
+    z-index:0 !important; display:block !important; background-image:url('${nivel.fondo}') !important;
+    background-size: 110% 110% !important; background-position: 50% 50% !important; background-repeat:no-repeat !important;
   `;
-  
   document.getElementById('avatar-img').src = nivel.avatar;
   document.getElementById('hud-nivel').textContent = `Nivel ${n}`;
   document.getElementById('hud-periodo').textContent = nivel.nombre;
   document.getElementById('narrativa-titulo').textContent = nivel.titulo;
   document.getElementById('narrativa-texto').textContent = nivel.narrativa;
-  
   reproducirAudioNivel(nivel);
-  
   mostrarPantalla('pantalla-narrativa');
 }
 
@@ -740,17 +423,11 @@ function iniciarNivel(){
   estado.indicePregunta = 0;
   estado.fallosEnPregunta = 0;
   estado.respuestasPorNivel[estado.nivelActual] = []; 
-  
   const caminante = document.getElementById('avatar-caminando');
   caminante.style.display='block';
   caminante.style.left='10px';
-  setTimeout(()=>{
-    caminante.style.left='calc(100% - 130px)';
-  },50);
-  setTimeout(()=>{
-    caminante.style.display='none';
-    mostrarPregunta();
-  },6000);
+  setTimeout(()=>{ caminante.style.left='calc(100% - 130px)'; }, 50);
+  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 6000);
 }
 
 function mostrarPregunta(){
@@ -759,7 +436,6 @@ function mostrarPregunta(){
   document.getElementById('pregunta-texto').textContent = p.q;
   document.getElementById('hud-pregunta').textContent = estado.indicePregunta+1;
   document.getElementById('hud-puntos').textContent = estado.puntos;
-  
   const cont = document.getElementById('opciones');
   cont.innerHTML='';
   p.o.forEach((op,i)=>{
@@ -769,7 +445,6 @@ function mostrarPregunta(){
     btn.onclick = ()=>responder(i,btn);
     cont.appendChild(btn);
   });
-  
   document.getElementById('feedback').style.display='none';
   document.getElementById('btn-siguiente').style.display='none';
   mostrarPantalla('pantalla-preguntas');
@@ -779,7 +454,6 @@ function responder(idx,btn){
   const p = estado.preguntasNivel[estado.indicePregunta];
   const feedback = document.getElementById('feedback');
   const todasOpciones = document.querySelectorAll('.opcion');
-  
   if(idx === p.c){
     btn.classList.add('correcta');
     todasOpciones.forEach(o=>o.classList.add('deshabilitada'));
@@ -789,17 +463,11 @@ function responder(idx,btn){
     feedback.textContent = '✅ ¡Correcto! +10 puntos';
     feedback.style.display='block';
     document.getElementById('btn-siguiente').style.display='inline-block';
-    
-    estado.respuestasPorNivel[estado.nivelActual].push({
-      pregunta: p.q,
-      correcta: true,
-      respuesta: p.o[idx]
-    });
+    estado.respuestasPorNivel[estado.nivelActual].push({ pregunta: p.q, correcta: true, respuesta: p.o[idx] });
   } else {
     btn.classList.add('incorrecta');
     btn.classList.add('deshabilitada');
     estado.fallosEnPregunta++;
-    
     if(estado.fallosEnPregunta >= 2){
       feedback.className='pista';
       feedback.innerHTML = `💡 <strong>Fragmento de Sabiduría:</strong> La respuesta correcta es la opción <strong>${String.fromCharCode(65+p.c)}</strong>. Revisa tus apuntes de este periodo antes de continuar.`;
@@ -807,13 +475,7 @@ function responder(idx,btn){
       todasOpciones[p.c].classList.add('correcta');
       todasOpciones.forEach(o=>o.classList.add('deshabilitada'));
       document.getElementById('btn-siguiente').style.display='inline-block';
-      
-      estado.respuestasPorNivel[estado.nivelActual].push({
-        pregunta: p.q,
-        correcta: false,
-        respuesta: p.o[idx],
-        correctaRespuesta: p.o[p.c]
-      });
+      estado.respuestasPorNivel[estado.nivelActual].push({ pregunta: p.q, correcta: false, respuesta: p.o[idx], correctaRespuesta: p.o[p.c] });
     } else {
       feedback.className='mal';
       feedback.textContent = `❌ Incorrecto. Te queda ${2-estado.fallosEnPregunta} intento(s). ¡Piénsalo bien!`;
@@ -825,18 +487,14 @@ function responder(idx,btn){
 function siguientePregunta(){
   estado.indicePregunta++;
   estado.fallosEnPregunta = 0;
-  
   if(estado.indicePregunta >= 3){
     if(estado.nivelActual < 6){
       const vortice = document.getElementById('vortice');
       document.getElementById('vortice-texto').textContent = `Viajando al ${NIVELES[estado.nivelActual+1].nombre}...`;
       vortice.classList.add('activo');
-      setTimeout(()=>{
-        vortice.classList.remove('activo');
-        cargarNivel(estado.nivelActual+1);
-      },2000);
+      setTimeout(()=>{ vortice.classList.remove('activo'); cargarNivel(estado.nivelActual+1); }, 2000);
     } else {
-      mostrarReporte(); // AQUÍ CAMBIAMOS: Ahora va al reporte antes del diploma
+      mostrarReporte();
     }
   } else {
     mostrarPregunta();
@@ -848,48 +506,67 @@ function mostrarReporte(){
   document.getElementById('avatar-container').style.display='none';
   document.getElementById('avatar-caminando').style.display='none';
   document.getElementById('fondo-dinamico').style.display='none';
-  
   document.getElementById('reporte-nombre').textContent = estado.nombre;
-  
   const contenido = document.getElementById('reporte-contenido');
   contenido.innerHTML = '';
-  
   for(let n=1; n<=6; n++){
     const nivel = NIVELES[n];
     const respuestas = estado.respuestasPorNivel[n] || [];
     const correctas = respuestas.filter(r => r.correcta).length;
-    
     const div = document.createElement('div');
     div.className = 'periodo-resumen';
-    div.innerHTML = `
-      <h3>${nivel.titulo} — ${correctas}/3 correctas</h3>
-      ${respuestas.map((r, i) => `
-        <div class="respuesta-item ${r.correcta ? 'correcta' : 'incorrecta'}">
-          <strong>${i+1}. ${r.pregunta}</strong><br>
-          ${r.correcta 
-            ? `✅ Respondiste: ${r.respuesta}` 
-            : `❌ Respondiste: ${r.respuesta}<br>✅ Correcta: ${r.correctaRespuesta}`}
-        </div>
-      `).join('')}
-    `;
+    div.innerHTML = `<h3>${nivel.titulo} — ${correctas}/3 correctas</h3>` + 
+      respuestas.map((r, i) => `<div class="respuesta-item ${r.correcta ? 'correcta' : 'incorrecta'}"><strong>${i+1}. ${r.pregunta}</strong><br>${r.correcta ? `✅ Respondiste: ${r.respuesta}` : `❌ Respondiste: ${r.respuesta}<br>✅ Correcta: ${r.correctaRespuesta}`}</div>`).join('');
     contenido.appendChild(div);
   }
-  
   mostrarPantalla('pantalla-reporte');
 }
 
 function mostrarDiploma(){
   document.getElementById('diploma-nombre').textContent = estado.nombre;
   document.getElementById('diploma-puntos').textContent = estado.puntos;
-  
   let rango = 'APRENDIZ';
   if(estado.puntos >= 150) rango = 'LEYENDA SONORA';
   else if(estado.puntos >= 120) rango = 'MAESTRO DEL TIEMPO';
   else if(estado.puntos >= 90) rango = 'CRONISTA EXPERTO';
   else if(estado.puntos >= 60) rango = 'CRONISTA';
   document.getElementById('diploma-rango').textContent = rango;
-  
   mostrarPantalla('pantalla-diploma');
+}
+
+/* ============================================================
+   EFECTO PARALLAX 3D (Mouse en PC / Giroscopio en Celular)
+   ============================================================ */
+const fondoDinamico = document.getElementById('fondo-dinamico');
+
+function actualizarParallax(x, y) {
+    const moveX = 50 + (x * 8); 
+    const moveY = 50 + (y * 8);
+    fondoDinamico.style.backgroundPosition = `${moveX}% ${moveY}%`;
+}
+
+document.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth) * 2 - 1;
+    const y = (e.clientY / window.innerHeight) * 2 - 1;
+    actualizarParallax(x, y);
+});
+
+function handleOrientation(event) {
+    const x = Math.max(-1, Math.min(1, event.gamma / 30)); 
+    const y = Math.max(-1, Math.min(1, (event.beta - 45) / 30)); 
+    actualizarParallax(x, y);
+}
+
+if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+    document.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission().then(response => {
+            if (response === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation);
+            }
+        }).catch(console.error);
+    }, { once: true });
+} else {
+    window.addEventListener('deviceorientation', handleOrientation);
 }
 </script>
 </body>
