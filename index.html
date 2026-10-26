@@ -22,12 +22,64 @@
   /* ===== PANTALLAS ===== */
   .pantalla{
     position:fixed;inset:0;display:none;
-    background:transparent !important; /* Cambiado para ver el fondo */
+    background:transparent !important;
     overflow-y:auto;
   }
   .pantalla.activa{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
   
-  /* ===== FONDO DINÁMICO - FORZADO ===== */
+  /* ===== COLLAGE DE FONDO PARA PANTALLA DE INICIO ===== */
+  #collage-fondo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 0;
+  }
+
+  #collage-fondo .img-collage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+
+  #collage-fondo::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 27, 61, 0.75);
+    z-index: 1;
+  }
+
+  #collage-fondo .img-collage:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+
+  @media (max-width: 768px) {
+    #collage-fondo {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    #collage-fondo {
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(6, 1fr);
+    }
+  }
+  
+  /* ===== FONDO DINÁMICO ===== */
   #fondo-dinamico{
     position:fixed !important;
     top:0 !important;
@@ -39,8 +91,8 @@
     background-position:center !important;
     background-repeat:no-repeat !important;
     transition:opacity 1s;
+    display:none; /* Oculto al inicio, se muestra al cargar nivel */
   }
-  /* Capa oscura MUY ligera para que se vea el fondo */
   #fondo-dinamico::after{
     content:'' !important;
     position:absolute !important;
@@ -48,7 +100,7 @@
     left:0 !important;
     width:100% !important;
     height:100% !important;
-    background:rgba(15,27,61,0.2) !important; /* Muy transparente */
+    background:rgba(15,27,61,0.2) !important;
     z-index:1 !important;
   }
   .contenido{position:relative;z-index:2;width:100%;max-width:900px;padding:20px}
@@ -240,7 +292,7 @@
       background: white !important; display: flex; align-items: center; justify-content: center;
     }
     #diploma { box-shadow: none !important; border: 4px double var(--dorado) !important; }
-    .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice { display: none !important; }
+    .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice, #btn-mute { display: none !important; }
   }
   
   /* ===== RESPONSIVE ===== */
@@ -253,19 +305,33 @@
     #hud{font-size:0.8em;padding:8px 10px}
     #diploma{padding:20px}
     #diploma h1{font-size:1.8em}
+    #btn-mute{width:40px;height:40px;font-size:1.2em;bottom:10px;right:10px}
   }
 </style>
 </head>
 <body>
 
-<!-- FONDO DINÁMICO (movido al inicio para que esté detrás de todo) -->
-<div id="fondo-dinamico"></div>
+<!-- COLLAGE DE FONDO (solo visible en pantalla de inicio) -->
+<div id="collage-fondo">
+  <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg" alt="Edad Media">
+  <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo2.jpg" alt="Renacimiento">
+  <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo3.jpg" alt="Barroco">
+  <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo4.jpg" alt="Clasicismo">
+  <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo5.jpg" alt="Romanticismo">
+  <img class="img-collage" src="https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg" alt="Siglo XX y XXI">
+</div>
+
+<!-- REPRODUCTOR DE AUDIO OCULTO -->
+<audio id="musica-fondo" loop></audio>
+
+<!-- BOTÓN DE SILENCIAR -->
+<button id="btn-mute" onclick="toggleMute()" style="position:fixed; bottom:10px; right:10px; z-index:5; background:var(--azul-noche); color:var(--dorado); border:2px solid var(--dorado); border-radius:50%; width:50px; height:50px; font-size:1.5em; cursor:pointer; box-shadow:0 0 10px rgba(0,0,0,0.5);" title="Silenciar/Activar música">🔊</button>
 
 <!-- HUD -->
 <div id="hud" style="display:none">
   <div><span class="nivel-badge" id="hud-nivel">Nivel 1</span> <span id="hud-periodo">Edad Media</span></div>
-  <div>🎵 Puntos: <span id="hud-puntos">0</span></div>
-  <div>❓ Pregunta: <span id="hud-pregunta">1</span>/3</div>
+  <div> Puntos: <span id="hud-puntos">0</span></div>
+  <div> Pregunta: <span id="hud-pregunta">1</span>/3</div>
 </div>
 
 <!-- AVATAR FIJO -->
@@ -276,6 +342,9 @@
 <!-- AVATAR CAMINANDO -->
 <div id="avatar-caminando"></div>
 
+<!-- FONDO DINÁMICO -->
+<div id="fondo-dinamico"></div>
+
 <!-- VÓRTICE DE TRANSICIÓN -->
 <div id="vortice"><span id="vortice-texto">Viajando en el tiempo...</span></div>
 
@@ -283,7 +352,7 @@
 <div class="pantalla activa" id="pantalla-inicio">
   <div class="contenido">
     <div class="pergamino">
-      <h1>🎼 Viaje en el Tiempo </h1>
+      <h1> Viaje en el Tiempo 🎼</h1>
       <h2>La Leyenda del Códice Perdido</h2>
       <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
       <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
@@ -333,7 +402,7 @@
 <div class="pantalla" id="pantalla-diploma">
   <div class="contenido">
     <div id="diploma">
-      <h1>🏆 DIPLOMA AL MÉRITO MUSICAL 🏆</h1>
+      <h1> DIPLOMA AL MÉRITO MUSICAL </h1>
       <p class="texto">Se otorga a:</p>
       <div class="nombre" id="diploma-nombre"></div>
       <p class="texto">Por haber restaurado el Códice del Tiempo Sonoro, demostrando un conocimiento sobresaliente en la Historia de la Música a través de los seis periodos: Edad Media, Renacimiento, Barroco, Clasicismo, Romanticismo y Siglos XX-XXI.</p>
@@ -429,23 +498,29 @@ const BANCO = {
 };
 
 const NIVELES = {
-  1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco",
+  1:{nombre:"Edad Media",titulo:" Nivel 1: Los Monasterios del Eco",
      narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.",
+     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio1.mp3",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-01.png"},
   2:{nombre:"Renacimiento",titulo:"🎨 Nivel 2: El Despertar de las Voces",
      narrativa:"Año 1500. Florencia te recibe con luz dorada. El humanismo florece, las voces se entrelazan en polifonía y la imprenta difunde las partituras. Demuestra tu conocimiento del Renacimiento.",
+     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio2.mp3",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo2.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-02.png"},
   3:{nombre:"Barroco",titulo:"👑 Nivel 3: El Palacio del Contrapunto",
      narrativa:"Año 1680. Un palacio de terciopelo y oro se abre ante ti. El bajo continuo retumba, las fugas se enredan y la ópera nace. Bach, Vivaldi y Handel te observan. Supera sus pruebas.",
+     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio3.mp3",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo3.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-03.png"},
   4:{nombre:"Clasicismo",titulo:"🏛️ Nivel 4: El Templo de la Razón",
      narrativa:"Año 1780. Columnas blancas y cielos azules. La simetría y el equilibrio reinan. Mozart, Haydn y el joven Beethoven te esperan en el templo de la razón musical.",
+     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio4.mp3",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo4.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-04.png"},
   5:{nombre:"Romanticismo",titulo:"🌹 Nivel 5: El Jardín de las Pasiones",
      narrativa:"Año 1850. La luna se refleja en un lago. Un piano de cola espera bajo un sauce llorón. Las emociones desbordan las formas. Chopin, Schumann y Wagner te desafían.",
+     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio5.mp3",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo5.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-05.png"},
   6:{nombre:"Siglo XX y XXI",titulo:"⚡ Nivel 6: El Laboratorio del Futuro",
      narrativa:"Año 2026. Neón, sintetizadores y algoritmos. La música se ha transformado en ondas eléctricas e inteligencia artificial. Demuestra que comprendes el presente y el futuro del sonido.",
+     audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio6.mp3",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-06.png"}
 };
 
@@ -458,6 +533,53 @@ let estado = {
   fallosEnPregunta:0
 };
 
+let estaMuteado = false;
+let audioIntroReproduciendo = false;
+
+/* ============================================================
+   FUNCIONES DE AUDIO
+   ============================================================ */
+function toggleMute() {
+  const audioPlayer = document.getElementById('musica-fondo');
+  const btn = document.getElementById('btn-mute');
+  if (estaMuteado) {
+    audioPlayer.muted = false;
+    btn.textContent = '🔊';
+  } else {
+    audioPlayer.muted = true;
+    btn.textContent = '';
+  }
+  estaMuteado = !estaMuteado;
+}
+
+function reproducirAudioNivel(nivel) {
+  const audioPlayer = document.getElementById('musica-fondo');
+  if (nivel && nivel.audio) {
+    // Fade out suave del audio anterior
+    let fadeOut = setInterval(() => {
+      if (audioPlayer.volume > 0.1) {
+        audioPlayer.volume -= 0.1;
+      } else {
+        clearInterval(fadeOut);
+        audioPlayer.src = nivel.audio;
+        audioPlayer.volume = 0.3;
+        audioPlayer.play().catch(error => {
+          console.log("Reproducción automática bloqueada:", error);
+        });
+      }
+    }, 100);
+  }
+}
+
+function detenerAudio() {
+  const audioPlayer = document.getElementById('musica-fondo');
+  audioPlayer.pause();
+  audioPlayer.currentTime = 0;
+}
+
+/* ============================================================
+   FUNCIONES PRINCIPALES
+   ============================================================ */
 function mostrarPantalla(id){
   document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa'));
   document.getElementById(id).classList.add('activa');
@@ -470,8 +592,17 @@ function iniciarJuego(){
     return;
   }
   estado.nombre = nombre;
+  
+  // Ocultar collage y mostrar fondo dinámico
+  document.getElementById('collage-fondo').style.display = 'none';
+  document.getElementById('fondo-dinamico').style.display = 'block';
+  
   document.getElementById('hud').style.display='block';
   document.getElementById('avatar-container').style.display='block';
+  
+  // Detener audio de intro si existe
+  detenerAudio();
+  
   cargarNivel(1);
 }
 
@@ -488,6 +619,7 @@ function cargarNivel(n){
     width:100% !important;
     height:100% !important;
     z-index:0 !important;
+    display:block !important;
     background-image:url('${nivel.fondo}') !important;
     background-size:cover !important;
     background-position:center !important;
@@ -499,6 +631,10 @@ function cargarNivel(n){
   document.getElementById('hud-periodo').textContent = nivel.nombre;
   document.getElementById('narrativa-titulo').textContent = nivel.titulo;
   document.getElementById('narrativa-texto').textContent = nivel.narrativa;
+  
+  // Reproducir audio del nivel
+  reproducirAudioNivel(nivel);
+  
   mostrarPantalla('pantalla-narrativa');
 }
 
@@ -608,6 +744,9 @@ function mostrarDiploma(){
   document.getElementById('avatar-caminando').style.display='none';
   document.getElementById('fondo-dinamico').style.backgroundImage='none';
   document.getElementById('fondo-dinamico').style.background='linear-gradient(135deg,var(--azul-noche),var(--azul-medio))';
+  
+  // Detener música al llegar al diploma
+  detenerAudio();
   
   document.getElementById('diploma-nombre').textContent = estado.nombre;
   document.getElementById('diploma-puntos').textContent = estado.puntos;
