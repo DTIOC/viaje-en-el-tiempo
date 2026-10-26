@@ -30,12 +30,15 @@
   /* ===== FONDO DINÁMICO ===== */
   #fondo-dinamico{
     position:fixed;inset:0;z-index:0;
-    background-size:cover;background-position:center;
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
     transition:opacity 1s;
   }
+  /* Capa oscura reducida a 0.3 para que se vea el fondo */
   #fondo-dinamico::after{
     content:'';position:absolute;inset:0;
-    background:rgba(15,27,61,0.6); /* Un poco más oscuro para que se lea el texto */
+    background:rgba(15,27,61,0.3); 
   }
   .contenido{position:relative;z-index:1;width:100%;max-width:900px;padding:20px}
   
@@ -105,10 +108,11 @@
   #avatar-caminando{
     position:fixed;bottom:10px;left:10px;z-index:2;
     width:120px;height:180px;
+    /* URL directa de GitHub para el sprite */
     background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png');
     background-size: 400% 100%;
     background-repeat:no-repeat;
-    animation:caminar 3s steps(4) infinite; /* ANIMACIÓN MÁS LENTA (3s) */
+    animation:caminar 3s steps(4) infinite; /* Animación lenta de 3 segundos */
     filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));
     display:none;
   }
@@ -268,11 +272,11 @@
 <div class="pantalla activa" id="pantalla-inicio">
   <div class="contenido">
     <div class="pergamino">
-      <h1>🎼 Viaje en el Tiempo 🎼</h1>
+      <h1> Viaje en el Tiempo 🎼</h1>
       <h2>La Leyenda del Códice Perdido</h2>
       <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
       <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
-      <h3>📜 Reglas del juego</h3>
+      <h3> Reglas del juego</h3>
       <p>• Cada nivel tiene <strong>3 preguntas aleatorias</strong> de un banco de 10.<br>
          • Ganas <strong>10 puntos</strong> por cada respuesta correcta.<br>
          • Si fallas 2 veces en la misma pregunta, recibirás una <strong>pista</strong> antes de reintentar.<br>
@@ -340,7 +344,7 @@
    ============================================================ */
 const BANCO = {
   1: [ // Edad Media
-    {q:"¿Qué institución ejercía el mayor control social y cultural durante la mayor parte de Edad Media?",o:["Los gremios de comerciantes","La Iglesia y los monasterios","Los reyes y la nobleza laica"],c:1},
+    {q:"¿Qué institución ejercía el mayor control social y cultural durante la mayor parte de la Edad Media?",o:["Los gremios de comerciantes","La Iglesia y los monasterios","Los reyes y la nobleza laica"],c:1},
     {q:"¿Cómo se llamaba a las personas que vivían en los alrededores de los monasterios y dependían de sus órdenes?",o:["Burgueses","Villanos","Clérigos"],c:1},
     {q:"¿Cuál fue la gran contribución de Guido d'Arezzo a la música?",o:["Inventar el primer instrumento de teclado","Sentar las bases de la notación musical moderna (pentagrama y nombres de las notas)","Componer la primera ópera de la historia"],c:1},
     {q:"¿Quiénes fueron Léonin y Pérotin, y con qué escuela se les asocia?",o:["Trovadores que cantaban en occitano","Compositores de la Escuela de Notre Dame, pioneros en la polifonía (Organum)","Teóricos que prohibieron el uso de instrumentos en la iglesia"],c:1},
@@ -432,7 +436,7 @@ const NIVELES = {
   5:{nombre:"Romanticismo",titulo:"🌹 Nivel 5: El Jardín de las Pasiones",
      narrativa:"Año 1850. La luna se refleja en un lago. Un piano de cola espera bajo un sauce llorón. Las emociones desbordan las formas. Chopin, Schumann y Wagner te desafían.",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo5.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-05.png"},
-  6:{nombre:"Siglo XX y XXI",titulo:"⚡ Nivel 6: El Laboratorio del Futuro",
+  6:{nombre:"Siglo XX y XXI",titulo:" Nivel 6: El Laboratorio del Futuro",
      narrativa:"Año 2026. Neón, sintetizadores y algoritmos. La música se ha transformado en ondas eléctricas e inteligencia artificial. Demuestra que comprendes el presente y el futuro del sonido.",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-06.png"}
 };
