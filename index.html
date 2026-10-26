@@ -22,25 +22,36 @@
   /* ===== PANTALLAS ===== */
   .pantalla{
     position:fixed;inset:0;display:none;
-    background:linear-gradient(135deg,var(--azul-noche),var(--azul-medio));
+    background:transparent !important; /* Cambiado para ver el fondo */
     overflow-y:auto;
   }
   .pantalla.activa{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
   
-  /* ===== FONDO DINÁMICO ===== */
+  /* ===== FONDO DINÁMICO - FORZADO ===== */
   #fondo-dinamico{
-    position:fixed;inset:0;z-index:0;
-    background-size:cover;
-    background-position:center;
-    background-repeat:no-repeat;
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    width:100% !important;
+    height:100% !important;
+    z-index:0 !important;
+    background-size:cover !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
     transition:opacity 1s;
   }
-  /* Capa oscura reducida a 0.3 para que se vea el fondo */
+  /* Capa oscura MUY ligera para que se vea el fondo */
   #fondo-dinamico::after{
-    content:'';position:absolute;inset:0;
-    background:rgba(15,27,61,0.3); 
+    content:'' !important;
+    position:absolute !important;
+    top:0 !important;
+    left:0 !important;
+    width:100% !important;
+    height:100% !important;
+    background:rgba(15,27,61,0.2) !important; /* Muy transparente */
+    z-index:1 !important;
   }
-  .contenido{position:relative;z-index:1;width:100%;max-width:900px;padding:20px}
+  .contenido{position:relative;z-index:2;width:100%;max-width:900px;padding:20px}
   
   /* ===== PERGAMINO ===== */
   .pergamino{
@@ -50,6 +61,7 @@
     padding:30px;
     box-shadow:0 0 30px rgba(212,175,55,0.4), inset 0 0 40px rgba(139,26,26,0.08);
     position:relative;
+    z-index:3;
   }
   .pergamino::before,.pergamino::after{
     content:'';position:absolute;width:40px;height:40px;
@@ -95,7 +107,7 @@
   
   /* ===== AVATAR ===== */
   #avatar-container{
-    position:fixed;bottom:10px;left:10px;z-index:2;
+    position:fixed;bottom:10px;left:10px;z-index:4;
     width:120px;height:200px;
     pointer-events:none;
   }
@@ -106,13 +118,12 @@
     transition:opacity .6s;
   }
   #avatar-caminando{
-    position:fixed;bottom:10px;left:10px;z-index:2;
+    position:fixed;bottom:10px;left:10px;z-index:4;
     width:120px;height:180px;
-    /* URL directa de GitHub para el sprite */
-    background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png');
-    background-size: 400% 100%;
-    background-repeat:no-repeat;
-    animation:caminar 3s steps(4) infinite; /* Animación lenta de 3 segundos */
+    background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;
+    background-size: 400% 100% !important;
+    background-repeat:no-repeat !important;
+    animation:caminar 3s steps(4) infinite;
     filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));
     display:none;
   }
@@ -123,7 +134,7 @@
   
   /* ===== HUD ===== */
   #hud{
-    position:fixed;top:10px;right:10px;z-index:3;
+    position:fixed;top:10px;right:10px;z-index:5;
     background:rgba(15,27,61,0.9);
     border:2px solid var(--dorado);
     border-radius:8px;
@@ -247,6 +258,9 @@
 </head>
 <body>
 
+<!-- FONDO DINÁMICO (movido al inicio para que esté detrás de todo) -->
+<div id="fondo-dinamico"></div>
+
 <!-- HUD -->
 <div id="hud" style="display:none">
   <div><span class="nivel-badge" id="hud-nivel">Nivel 1</span> <span id="hud-periodo">Edad Media</span></div>
@@ -262,9 +276,6 @@
 <!-- AVATAR CAMINANDO -->
 <div id="avatar-caminando"></div>
 
-<!-- FONDO DINÁMICO -->
-<div id="fondo-dinamico"></div>
-
 <!-- VÓRTICE DE TRANSICIÓN -->
 <div id="vortice"><span id="vortice-texto">Viajando en el tiempo...</span></div>
 
@@ -272,11 +283,11 @@
 <div class="pantalla activa" id="pantalla-inicio">
   <div class="contenido">
     <div class="pergamino">
-      <h1> Viaje en el Tiempo 🎼</h1>
+      <h1>🎼 Viaje en el Tiempo </h1>
       <h2>La Leyenda del Códice Perdido</h2>
       <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
       <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
-      <h3> Reglas del juego</h3>
+      <h3>📜 Reglas del juego</h3>
       <p>• Cada nivel tiene <strong>3 preguntas aleatorias</strong> de un banco de 10.<br>
          • Ganas <strong>10 puntos</strong> por cada respuesta correcta.<br>
          • Si fallas 2 veces en la misma pregunta, recibirás una <strong>pista</strong> antes de reintentar.<br>
@@ -343,7 +354,7 @@
    BANCO DE 60 PREGUNTAS (10 por nivel)
    ============================================================ */
 const BANCO = {
-  1: [ // Edad Media
+  1: [
     {q:"¿Qué institución ejercía el mayor control social y cultural durante la mayor parte de la Edad Media?",o:["Los gremios de comerciantes","La Iglesia y los monasterios","Los reyes y la nobleza laica"],c:1},
     {q:"¿Cómo se llamaba a las personas que vivían en los alrededores de los monasterios y dependían de sus órdenes?",o:["Burgueses","Villanos","Clérigos"],c:1},
     {q:"¿Cuál fue la gran contribución de Guido d'Arezzo a la música?",o:["Inventar el primer instrumento de teclado","Sentar las bases de la notación musical moderna (pentagrama y nombres de las notas)","Componer la primera ópera de la historia"],c:1},
@@ -355,7 +366,7 @@ const BANCO = {
     {q:"¿Qué diferencia principal había entre la música de los monasterios y la de los trovadores/juglares?",o:["La del monasterio era profana y la de los trovadores era sagrada","La del monasterio era sagrada (litúrgica) y la de los trovadores era profana","No había diferencia, ambas usaban los mismos textos en latín"],c:1},
     {q:"¿Qué compositor es considerado el máximo exponente musical del periodo conocido como 'Ars Nova'?",o:["Guido d'Arezzo","Guillaume de Machaut","Pérotin"],c:1}
   ],
-  2: [ // Renacimiento
+  2: [
     {q:"¿Qué movimiento cultural y filosófico caracterizó al Renacimiento, poniendo al ser humano en el centro del pensamiento?",o:["El feudalismo","El humanismo","El romanticismo"],c:1},
     {q:"¿Cuál es la estructura básica de una Misa (Missa) del Renacimiento?",o:["Introducción, desarrollo y final","Kyrie, Gloria, Credo, Sanctus y Agnus Dei","Preludio, fuga y final"],c:1},
     {q:"¿Qué compositor es considerado el máximo exponente de la música sacra renacentista y cuya obra influyó en el Concilio de Trento?",o:["Thomas Tallis","Giovanni Pierluigi da Palestrina","Claudio Monteverdi"],c:1},
@@ -367,7 +378,7 @@ const BANCO = {
     {q:"¿Qué compositor es conocido como el 'Maestro de la polifonía' que combinó técnicas medievales con innovaciones renacentistas?",o:["Guido d'Arezzo","Josquin des Prez","Guillaume de Machaut"],c:1},
     {q:"¿Cómo se llamaban las canciones populares o aristocráticas escritas en lenguas vernáculas durante este periodo?",o:["Cantos gregorianos","Chansons o villancicos (canción cortesana)","Motetes latinos"],c:1}
   ],
-  3: [ // Barroco
+  3: [
     {q:"¿Qué acontecimiento en 1750 se considera tradicionalmente el fin del período Barroco?",o:["La invención del pianoforte","La muerte de Johann Sebastian Bach","El estreno de la ópera L'Orfeo"],c:1},
     {q:"¿Qué elemento técnico se convirtió en la base armónica característica de casi toda la música barroca?",o:["La melodía a capella","El bajo continuo (basso continuo)","El serialismo"],c:1},
     {q:"¿Qué compositor es considerado el 'padre de la ópera moderna' y puente entre el Renacimiento y el Barroco con su obra L'Orfeo?",o:["Claudio Monteverdi","Antonio Vivaldi","Henry Purcell"],c:0},
@@ -379,7 +390,7 @@ const BANCO = {
     {q:"¿Cómo utilizaron las monarquías absolutas el arte y la música durante el Barroco?",o:["Para promover la igualdad social","Como herramientas de propaganda política para glorificar su poder","Para prohibir la música religiosa en sus cortes"],c:1},
     {q:"¿Qué compositor italiano es reconocido como un innovador del concierto solista y maestro del virtuosismo, autor de Las Cuatro Estaciones?",o:["Antonio Vivaldi","Giovanni Pierluigi da Palestrina","Claudio Monteverdi"],c:0}
   ],
-  4: [ // Clasicismo
+  4: [
     {q:"¿Entre qué años se ubica tradicionalmente el periodo Clásico en la historia de la música?",o:["1600 a 1750","1750 a 1827","1827 a 1900"],c:1},
     {q:"¿Qué ideales estéticos, inspirados en las antiguas culturas griega y romana, buscaban los compositores clásicos?",o:["El dramatismo y la exuberancia","El equilibrio y la simetría","La improvisación total y el caos"],c:1},
     {q:"¿Por qué se le conoce a Joseph Haydn en la historia de la música?",o:["Como el 'Padre de la sinfonía'","Como el inventor del clarinete","Como el primer compositor de óperas románticas"],c:0},
@@ -391,7 +402,7 @@ const BANCO = {
     {q:"¿Qué instrumento de cuerda frotada, mencionado en el material, es un antecedente curioso de la guitarra moderna?",o:["La viola da gamba","El arpeggione","El organistrum"],c:1},
     {q:"¿Qué forma de música de cámara se volvió emblemática del Clasicismo, reemplazando a la 'trío sonata' del Barroco?",o:["El madrigal","El cuarteto de cuerdas","El oratorio"],c:1}
   ],
-  5: [ // Romanticismo
+  5: [
     {q:"¿Cuál es el rango de fechas tradicionalmente aceptado para el periodo Romántico en la música?",o:["1920 a 2000","1820 a 1900","1750 a 1820"],c:1},
     {q:"¿Qué elementos se convirtieron en el centro de la creación artística durante el Romanticismo, en contraposición a las restricciones del Clasicismo?",o:["La simetría, el equilibrio y la razón pura","Los sentimientos, la naturaleza y la individualidad","La religión y el poder absoluto de los monarcas"],c:1},
     {q:"¿Qué compositor es conocido como el maestro del piano, famoso por sus nocturnos, valses y estudios?",o:["Franz Schubert","Frédéric Chopin","Hector Berlioz"],c:1},
@@ -403,7 +414,7 @@ const BANCO = {
     {q:"¿Qué compositor es uno de los grandes exponentes de la música rusa y autor de ballets como El lago de los cisnes?",o:["Pyotr Ilyich Tchaikovsky","Robert Schumann","Joseph Haydn"],c:0},
     {q:"¿Qué evolución sufrió la guitarra durante el siglo XIX según el material?",o:["Desapareció por completo de la música culta","Pasó de ser una guitarra romántica a la guitarra moderna hacia finales del siglo","Se convirtió en un instrumento exclusivo de la orquesta sinfónica"],c:1}
   ],
-  6: [ // S. XX y XXI
+  6: [
     {q:"¿Qué compositor es considerado el precursor de la ruptura con la tradición tonal, iniciando el Impresionismo musical?",o:["Igor Stravinsky","Achille Claude Debussy","Arnold Schönberg"],c:1},
     {q:"¿Qué técnica compositiva, creada por Arnold Schönberg, busca que todos los sonidos tengan la misma relevancia, como una 'democracia sonora'?",o:["El serialismo","El dodecafonismo","El microtonalismo"],c:1},
     {q:"¿Qué compositor mexicano es reconocido como el creador de la 'Teoría del Sonido 13' y pionero del microtonalismo?",o:["Manuel M. Ponce","Julián Carrillo","Julio Estrada"],c:1},
@@ -417,9 +428,6 @@ const BANCO = {
   ]
 };
 
-/* ============================================================
-   DATOS DE LOS NIVELES (CON RUTAS RAW DE GITHUB)
-   ============================================================ */
 const NIVELES = {
   1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco",
      narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.",
@@ -436,14 +444,11 @@ const NIVELES = {
   5:{nombre:"Romanticismo",titulo:"🌹 Nivel 5: El Jardín de las Pasiones",
      narrativa:"Año 1850. La luna se refleja en un lago. Un piano de cola espera bajo un sauce llorón. Las emociones desbordan las formas. Chopin, Schumann y Wagner te desafían.",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo5.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-05.png"},
-  6:{nombre:"Siglo XX y XXI",titulo:" Nivel 6: El Laboratorio del Futuro",
+  6:{nombre:"Siglo XX y XXI",titulo:"⚡ Nivel 6: El Laboratorio del Futuro",
      narrativa:"Año 2026. Neón, sintetizadores y algoritmos. La música se ha transformado en ondas eléctricas e inteligencia artificial. Demuestra que comprendes el presente y el futuro del sonido.",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo6.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-06.png"}
 };
 
-/* ============================================================
-   ESTADO DEL JUEGO
-   ============================================================ */
 let estado = {
   nombre:"",
   nivelActual:1,
@@ -453,9 +458,6 @@ let estado = {
   fallosEnPregunta:0
 };
 
-/* ============================================================
-   FUNCIONES PRINCIPALES
-   ============================================================ */
 function mostrarPantalla(id){
   document.querySelectorAll('.pantalla').forEach(p=>p.classList.remove('activa'));
   document.getElementById(id).classList.add('activa');
@@ -477,15 +479,24 @@ function cargarNivel(n){
   estado.nivelActual = n;
   const nivel = NIVELES[n];
   
-  // Cambiar fondo y avatar usando las URLs raw
-  document.getElementById('fondo-dinamico').style.backgroundImage = `url('${nivel.fondo}')`;
-  document.getElementById('avatar-img').src = nivel.avatar;
+  // Forzar el fondo con !important vía JavaScript
+  const fondoDiv = document.getElementById('fondo-dinamico');
+  fondoDiv.style.cssText = `
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    width:100% !important;
+    height:100% !important;
+    z-index:0 !important;
+    background-image:url('${nivel.fondo}') !important;
+    background-size:cover !important;
+    background-position:center !important;
+    background-repeat:no-repeat !important;
+  `;
   
-  // Actualizar HUD
+  document.getElementById('avatar-img').src = nivel.avatar;
   document.getElementById('hud-nivel').textContent = `Nivel ${n}`;
   document.getElementById('hud-periodo').textContent = nivel.nombre;
-  
-  // Mostrar narrativa
   document.getElementById('narrativa-titulo').textContent = nivel.titulo;
   document.getElementById('narrativa-texto').textContent = nivel.narrativa;
   mostrarPantalla('pantalla-narrativa');
@@ -502,7 +513,6 @@ function iniciarNivel(){
   estado.indicePregunta = 0;
   estado.fallosEnPregunta = 0;
   
-  // Activar avatar caminando brevemente
   const caminante = document.getElementById('avatar-caminando');
   caminante.style.display='block';
   caminante.style.left='10px';
@@ -512,7 +522,7 @@ function iniciarNivel(){
   setTimeout(()=>{
     caminante.style.display='none';
     mostrarPregunta();
-  },3000); // 3 segundos de caminata
+  },3000);
 }
 
 function mostrarPregunta(){
