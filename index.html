@@ -56,7 +56,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(15, 27, 61, 0.75);
+    background: rgba(15, 27, 61, 0.75); /* Capa oscura para legibilidad */
     z-index: 1;
   }
 
@@ -292,7 +292,7 @@
       background: white !important; display: flex; align-items: center; justify-content: center;
     }
     #diploma { box-shadow: none !important; border: 4px double var(--dorado) !important; }
-    .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice, #btn-mute { display: none !important; }
+    .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice, #btn-mute, #collage-fondo { display: none !important; }
   }
   
   /* ===== RESPONSIVE ===== */
@@ -330,8 +330,8 @@
 <!-- HUD -->
 <div id="hud" style="display:none">
   <div><span class="nivel-badge" id="hud-nivel">Nivel 1</span> <span id="hud-periodo">Edad Media</span></div>
-  <div> Puntos: <span id="hud-puntos">0</span></div>
-  <div> Pregunta: <span id="hud-pregunta">1</span>/3</div>
+  <div>⭐ Puntos: <span id="hud-puntos">0</span></div>
+  <div>❓ Pregunta: <span id="hud-pregunta">1</span>/3</div>
 </div>
 
 <!-- AVATAR FIJO -->
@@ -352,7 +352,7 @@
 <div class="pantalla activa" id="pantalla-inicio">
   <div class="contenido">
     <div class="pergamino">
-      <h1> Viaje en el Tiempo 🎼</h1>
+      <h1>🕰️ Viaje en el Tiempo 🎼</h1>
       <h2>La Leyenda del Códice Perdido</h2>
       <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
       <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
@@ -402,7 +402,7 @@
 <div class="pantalla" id="pantalla-diploma">
   <div class="contenido">
     <div id="diploma">
-      <h1> DIPLOMA AL MÉRITO MUSICAL </h1>
+      <h1>🏆 DIPLOMA AL MÉRITO MUSICAL 🏆</h1>
       <p class="texto">Se otorga a:</p>
       <div class="nombre" id="diploma-nombre"></div>
       <p class="texto">Por haber restaurado el Códice del Tiempo Sonoro, demostrando un conocimiento sobresaliente en la Historia de la Música a través de los seis periodos: Edad Media, Renacimiento, Barroco, Clasicismo, Romanticismo y Siglos XX-XXI.</p>
@@ -498,7 +498,7 @@ const BANCO = {
 };
 
 const NIVELES = {
-  1:{nombre:"Edad Media",titulo:" Nivel 1: Los Monasterios del Eco",
+  1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco",
      narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.",
      audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio1.mp3",
      fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-01.png"},
@@ -534,7 +534,6 @@ let estado = {
 };
 
 let estaMuteado = false;
-let audioIntroReproduciendo = false;
 
 /* ============================================================
    FUNCIONES DE AUDIO
@@ -547,7 +546,7 @@ function toggleMute() {
     btn.textContent = '🔊';
   } else {
     audioPlayer.muted = true;
-    btn.textContent = '';
+    btn.textContent = '🔇';
   }
   estaMuteado = !estaMuteado;
 }
@@ -562,7 +561,7 @@ function reproducirAudioNivel(nivel) {
       } else {
         clearInterval(fadeOut);
         audioPlayer.src = nivel.audio;
-        audioPlayer.volume = 0.3;
+        audioPlayer.volume = 0.3; // Volumen moderado
         audioPlayer.play().catch(error => {
           console.log("Reproducción automática bloqueada:", error);
         });
@@ -576,6 +575,38 @@ function detenerAudio() {
   audioPlayer.pause();
   audioPlayer.currentTime = 0;
 }
+
+// Inicializar audio de intro al cargar la página
+window.addEventListener('DOMContentLoaded', () => {
+  const audioPlayer = document.getElementById('musica-fondo');
+  const introURL = 'https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio-intro.mp3';
+  
+  audioPlayer.src = introURL;
+  audioPlayer.volume = 0.4;
+  audioPlayer.loop = true; 
+  
+  // Intentar reproducir inmediatamente
+  const playPromise = audioPlayer.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(error => {
+      // Si falla el autoplay (común en móviles), esperamos al primer click global
+      console.log("Autoplay bloqueado. Activando listener de click.");
+      
+      const unlockAudio = () => {
+        audioPlayer.play().then(() => {
+            console.log("Audio desbloqueado tras interacción");
+        }).catch(e => console.error("Error al intentar reproducir tras click", e));
+        
+        // Remover el listener una vez funcionó
+        document.removeEventListener('click', unlockAudio);
+        document.removeEventListener('touchstart', unlockAudio);
+      };
+      
+      document.addEventListener('click', unlockAudio, { once: true });
+      document.addEventListener('touchstart', unlockAudio, { once: true });
+    });
+  }
+});
 
 /* ============================================================
    FUNCIONES PRINCIPALES
@@ -600,9 +631,8 @@ function iniciarJuego(){
   document.getElementById('hud').style.display='block';
   document.getElementById('avatar-container').style.display='block';
   
-  // Detener audio de intro si existe
+  // Detener audio de intro y cargar nivel 1
   detenerAudio();
-  
   cargarNivel(1);
 }
 
@@ -763,4 +793,3 @@ function mostrarDiploma(){
 </script>
 </body>
 </html>
-<!-- Reintento de despliegue -->
