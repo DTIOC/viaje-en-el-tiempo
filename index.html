@@ -317,7 +317,7 @@ const BANCO = {
 };
 
 const NIVELES = {
-  1:{nombre:"Edad Media",titulo:" Nivel 1: Los Monasterios del Eco", narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio1.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-01.png"},
+  1:{nombre:"Edad Media",titulo:"🏰 Nivel 1: Los Monasterios del Eco", narrativa:"Año 800 d.C. Llegas a un monasterio envuelto en niebla. Los monjes cantan en latín y el eco rebota en los muros de piedra. Debes demostrar que comprendes los orígenes de la música occidental para obtener el primer fragmento del Códice.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio1.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo1.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-01.png"},
   2:{nombre:"Renacimiento",titulo:"🎨 Nivel 2: El Despertar de las Voces", narrativa:"Año 1500. Florencia te recibe con luz dorada. El humanismo florece, las voces se entrelazan en polifonía y la imprenta difunde las partituras. Demuestra tu conocimiento del Renacimiento.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio2.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo2.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-02.png"},
   3:{nombre:"Barroco",titulo:"👑 Nivel 3: El Palacio del Contrapunto", narrativa:"Año 1680. Un palacio de terciopelo y oro se abre ante ti. El bajo continuo retumba, las fugas se enredan y la ópera nace. Bach, Vivaldi y Handel te observan. Supera sus pruebas.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio3.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo3.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-03.png"},
   4:{nombre:"Clasicismo",titulo:"🏛️ Nivel 4: El Templo de la Razón", narrativa:"Año 1780. Columnas blancas y cielos azules. La simetría y el equilibrio reinan. Mozart, Haydn y el joven Beethoven te esperan en el templo de la razón musical.", audio:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/audio/audio4.mp3", fondo:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/fondos/fondo4.jpg",avatar:"https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/auri-04.png"},
@@ -478,7 +478,7 @@ function responder(idx,btn){
       estado.respuestasPorNivel[estado.nivelActual].push({ pregunta: p.q, correcta: false, respuesta: p.o[idx], correctaRespuesta: p.o[p.c] });
     } else {
       feedback.className='mal';
-      feedback.textContent = ` Incorrecto. Te queda ${2-estado.fallosEnPregunta} intento(s). ¡Piénsalo bien!`;
+      feedback.textContent = `❌ Incorrecto. Te queda ${2-estado.fallosEnPregunta} intento(s). ¡Piénsalo bien!`;
       feedback.style.display='block';
     }
   }
@@ -516,7 +516,7 @@ function mostrarReporte(){
     const div = document.createElement('div');
     div.className = 'periodo-resumen';
     div.innerHTML = `<h3>${nivel.titulo} — ${correctas}/3 correctas</h3>` + 
-      respuestas.map((r, i) => `<div class="respuesta-item ${r.correcta ? 'correcta' : 'incorrecta'}"><strong>${i+1}. ${r.pregunta}</strong><br>${r.correcta ? `✅ Respondiste: ${r.respuesta}` : ` Respondiste: ${r.respuesta}<br>✅ Correcta: ${r.correctaRespuesta}`}</div>`).join('');
+      respuestas.map((r, i) => `<div class="respuesta-item ${r.correcta ? 'correcta' : 'incorrecta'}"><strong>${i+1}. ${r.pregunta}</strong><br>${r.correcta ? `✅ Respondiste: ${r.respuesta}` : `❌ Respondiste: ${r.respuesta}<br>✅ Correcta: ${r.correctaRespuesta}`}</div>`).join('');
     contenido.appendChild(div);
   }
   mostrarPantalla('pantalla-reporte');
@@ -535,13 +535,13 @@ function mostrarDiploma(){
 }
 
 /* ============================================================
-   EFECTO PARALLAX 3D - VERSIÓN SÚPER VISIBLE
+   EFECTO PARALLAX 3D
    ============================================================ */
 const fondoDinamico = document.getElementById('fondo-dinamico');
 
 function actualizarParallax(x, y) {
-    const moveX = 50 + (x * 30); // Aumentado de 20 a 30
-    const moveY = 50 + (y * 30); // Aumentado de 20 a 30
+    const moveX = 50 + (x * 30); 
+    const moveY = 50 + (y * 30); 
     fondoDinamico.style.backgroundPosition = `${moveX}% ${moveY}%`;
 }
 
