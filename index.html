@@ -34,7 +34,7 @@
     background-size: 110% 110% !important; 
     background-position: 50% 50% !important; 
     background-repeat:no-repeat !important;
-    transition: opacity 1s, background-position 0.1s ease-out; 
+    transition: opacity 1s; 
     display:none;
   }
   #fondo-dinamico::after{content:'' !important;position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(15,27,61,0.2) !important;z-index:1 !important;}
@@ -540,10 +540,9 @@ function mostrarDiploma(){
 const fondoDinamico = document.getElementById('fondo-dinamico');
 
 function actualizarParallax(x, y) {
-    const moveX = 50 + (x * 20); 
-    const moveY = 50 + (y * 20);
+    const moveX = 50 + (x * 30); // Aumentado de 20 a 30
+    const moveY = 50 + (y * 30); // Aumentado de 20 a 30
     fondoDinamico.style.backgroundPosition = `${moveX}% ${moveY}%`;
-    console.log(`Parallax activo: X=${moveX.toFixed(1)}%, Y=${moveY.toFixed(1)}%`);
 }
 
 document.addEventListener('mousemove', (e) => {
