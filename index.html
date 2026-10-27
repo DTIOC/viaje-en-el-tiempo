@@ -24,23 +24,26 @@
   
   #collage-fondo {position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 0;display: grid;grid-template-columns: repeat(3, 1fr);grid-template-rows: repeat(2, 1fr);gap: 0;}
   #collage-fondo .img-collage {width: 100%;height: 100%;object-fit: cover;display: block;transition: transform 0.5s ease;}
-  #collage-fondo::after {content: '';position: absolute;top: 0;left: 0;width: 100%;height: 100%;background: rgba(15, 27, 1, 0.75);z-index: 1;}
+  #collage-fondo::after {content: '';position: absolute;top: 0;left: 0;width: 100%;height: 100%;background: rgba(15, 27, 61, 0.75);z-index: 1;}
   #collage-fondo .img-collage:hover {transform: scale(1.05);filter: brightness(1.2);}
-  @media (max-width: 78px) {#collage-fondo {grid-template-columns: repeat(2, 1fr);grid-template-rows: repeat(3, 1fr);}}
-  @media (max-width: 480px) {#collage-fondo {grid-template-columns: 1fr;grid-template-rows: repeat(, 1fr);}}
+  
+  /* CORREGIDO: Media queries para el collage */
+  @media (max-width: 768px) {#collage-fondo {grid-template-columns: repeat(2, 1fr);grid-template-rows: repeat(3, 1fr);}}
+  @media (max-width: 480px) {#collage-fondo {grid-template-columns: 1fr;grid-template-rows: repeat(6, 1fr);}}
   
   #fondo-dinamico{
     position:fixed !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;z-index:0 !important;
-    background-size: 130% 130% !important; /* CORREGIDO: Más exceso para que el movimiento sea visible */
-    background-position: 50% 50% !important; 
+    background-size: cover !important; /* Vuelto a cover para que se vea bien en celulares */
+    background-position: center !important; 
     background-repeat:no-repeat !important;
     transition: opacity 1s; 
     display:none;
   }
-  #fondo-dinamico::after{content:'' !important;position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(15,27,1,0.2) !important;z-index:1 !important;}
+  #fondo-dinamico::after{content:'' !important;position:absolute !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;background:rgba(15,27,61,0.2) !important;z-index:1 !important;}
+  
   .contenido{position:relative;z-index:2;width:100%;max-width:900px;padding:20px}
   
-  .pergamino{background:var(--pergamino);border:3px solid var(--dorado);border-radius:8px;padding:30px;box-shadow:0 0 30px rgba(212,175,55,0.4), inset 0 0 40px rgba(139,2,26,0.08);position:relative;z-index:3;}
+  .pergamino{background:var(--pergamino);border:3px solid var(--dorado);border-radius:8px;padding:30px;box-shadow:0 0 30px rgba(212,175,55,0.4), inset 0 0 40px rgba(139,26,26,0.08);position:relative;z-index:3;}
   .pergamino::before,.pergamino::after{content:'';position:absolute;width:40px;height:40px;border:3px solid var(--dorado);}
   .pergamino::before{top:8px;left:8px;border-right:none;border-bottom:none}
   .pergamino::after{bottom:8px;right:8px;border-left:none;border-top:none}
@@ -60,7 +63,7 @@
   
   #avatar-container{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:200px;pointer-events:none;}
   #avatar-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));transition:opacity .6s;}
-  #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 2s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
+  #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 6s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
   @keyframes caminar{from{background-position:0 0}to{background-position:-300% 0}}
   
   #hud{position:fixed;top:10px;right:10px;z-index:5;background:rgba(15,27,61,0.9);border:2px solid var(--dorado);border-radius:8px;padding:10px 15px;color:var(--dorado-claro);font-size:0.95em;box-shadow:0 0 15px rgba(212,175,55,0.3);}
@@ -109,11 +112,44 @@
     .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice, #btn-mute, #collage-fondo { display: none !important; }
   }
   
-  @media(max-width:600px){
-    h1{font-size:1.6em} h2{font-size:1.2em} .pergamino{padding:20px}
-    #avatar-container{width:80px;height:140px} #avatar-caminando{width:80px;height:130px}
-    #hud{font-size:0.8em;padding:8px 10px} #diploma{padding:20px} #diploma h1{font-size:1.8em}
-    #btn-mute{width:40px;height:40px;font-size:1.2em;bottom:10px;right:10px} #reporte{padding:15px}
+  /* ===== OPTIMIZACIÓN PARA CELULARES ===== */
+  @media (max-width: 600px) {
+    .pantalla.activa {
+      justify-content: flex-start !important;
+      padding-top: 60px !important;
+      padding-bottom: 20px !important;
+      overflow-y: auto !important;
+    }
+    .contenido {
+      max-width: 95% !important;
+      padding: 10px !important;
+    }
+    .pergamino {
+      padding: 20px 15px !important;
+      max-width: 100% !important;
+    }
+    h1 { font-size: 1.5em !important; margin-bottom: 10px !important; }
+    h2 { font-size: 1.2em !important; margin-bottom: 10px !important; }
+    h3 { font-size: 1em !important; margin: 10px 0 8px !important; }
+    p { font-size: 0.95em !important; line-height: 1.5 !important; margin-bottom: 8px !important; }
+    
+    .pregunta { font-size: 1em !important; margin-bottom: 12px !important; }
+    .opcion { padding: 10px 12px !important; font-size: 0.9em !important; }
+    
+    #diploma { padding: 20px !important; }
+    #diploma h1 { font-size: 1.6em !important; }
+    #diploma .nombre { font-size: 1.3em !important; }
+    
+    #reporte { padding: 15px !important; max-width: 100% !important; }
+    .respuesta-item { font-size: 0.85em !important; padding: 8px !important; }
+    
+    .btn { padding: 10px 20px !important; font-size: 1em !important; }
+    input[type="text"] { font-size: 1em !important; padding: 10px !important; }
+    
+    #avatar-container { width: 80px; height: 140px; }
+    #avatar-caminando { width: 80px; height: 130px; }
+    #hud { font-size: 0.8em; padding: 8px 10px; }
+    #btn-mute { width: 40px; height: 40px; font-size: 1.2em; bottom: 10px; right: 10px; }
   }
 </style>
 </head>
@@ -401,9 +437,7 @@ function cargarNivel(n){
   fondoDiv.style.cssText = `
     position:fixed !important; top:0 !important; left:0 !important; width:100% !important; height:100% !important;
     z-index:0 !important; display:block !important; background-image:url('${nivel.fondo}') !important;
-    background-size: 130% 130% !important; /* CORREGIDO: Coincide con el CSS */
-    background-position: 50% 50% !important; 
-    background-repeat:no-repeat !important;
+    background-size: cover !important; background-position: center !important; background-repeat:no-repeat !important;
   `;
   document.getElementById('avatar-img').src = nivel.avatar;
   document.getElementById('hud-nivel').textContent = `Nivel ${n}`;
@@ -429,7 +463,7 @@ function iniciarNivel(){
   caminante.style.display='block';
   caminante.style.left='10px';
   setTimeout(()=>{ caminante.style.left='calc(100% - 130px)'; }, 50);
-  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 2000);
+  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 6000);
 }
 
 function mostrarPregunta(){
@@ -535,44 +569,6 @@ function mostrarDiploma(){
   document.getElementById('diploma-rango').textContent = rango;
   mostrarPantalla('pantalla-diploma');
 }
-
-/* ============================================================
-   EFECTO PARALLAX 3D (CORREGIDO MATEMÁTICAMENTE)
-   ============================================================ */
-const fondoDinamico = document.getElementById('fondo-dinamico');
-
-function actualizarParallax(x, y) {
-    // Multiplicador aumentado a 40 para compensar el exceso de tamaño
-    const moveX = 50 + (x * 40); 
-    const moveY = 50 + (y * 40); 
-    fondoDinamico.style.backgroundPosition = `${moveX}% ${moveY}%`;
-}
-
-document.addEventListener('mousemove', (e) => {
-    const x = (e.clientX / window.innerWidth) * 2 - 1;
-    const y = (e.clientY / window.innerHeight) * 2 - 1;
-    actualizarParallax(x, y);
-});
-
-function handleOrientation(event) {
-    const x = Math.max(-1, Math.min(1, event.gamma / 30)); 
-    const y = Math.max(-1, Math.min(1, (event.beta - 45) / 30));
-    actualizarParallax(x, y);
-}
-
-if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
-    document.addEventListener('click', () => {
-        DeviceOrientationEvent.requestPermission().then(response => {
-            if (response === 'granted') {
-                window.addEventListener('deviceorientation', handleOrientation);
-            }
-        }).catch(console.error);
-    }, { once: true });
-} else {
-    window.addEventListener('deviceorientation', handleOrientation);
-}
-
-console.log("✅ Efecto Parallax 3D cargado correctamente");
 </script>
 </body>
 </html>
