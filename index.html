@@ -62,7 +62,7 @@
   
   #avatar-container{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:200px;pointer-events:none;}
   #avatar-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));transition:opacity .2s;}
-  #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 1s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
+  #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 6s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
   @keyframes caminar{from{background-position:0 0}to{background-position:-300% 0}}
   
   #hud{position:fixed;top:10px;right:10px;z-index:5;background:rgba(15,27,61,0.9);border:2px solid var(--dorado);border-radius:8px;padding:10px 15px;color:var(--dorado-claro);font-size:0.95em;box-shadow:0 0 15px rgba(212,175,55,0.3);}
@@ -103,9 +103,9 @@
   @keyframes vortice-anim{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-  /* ===== REGLAS DE IMPRESIÓN BLINDADAS ===== */
+  /* ===== REGLAS DE IMPRESIÓN DEFINITIVAS ===== */
   @media print {
-    /* 1. Romper todas las restricciones de altura del documento */
+    /* 1. Resetear TODO el layout para impresión */
     html, body {
       height: auto !important;
       min-height: auto !important;
@@ -113,15 +113,17 @@
       overflow: visible !important;
       background: white !important;
       display: block !important;
+      position: static !important;
     }
 
-    /* 2. Ocultar absolutamente todo por defecto */
+    /* 2. Ocultar absolutamente todo */
     body * {
       visibility: hidden !important;
       height: 0 !important;
       width: 0 !important;
       margin: 0 !important;
       padding: 0 !important;
+      display: none !important;
     }
 
     /* 3. Hacer visible SOLO el reporte y el diploma */
@@ -130,23 +132,32 @@
       visibility: visible !important;
     }
 
-    /* 4. Convertir los contenedores en bloques normales sin posición fija */
+    /* 4. Convertir contenedores en bloques normales */
     #pantalla-reporte, #pantalla-diploma {
-      position: static !important; /* CLAVE: Elimina fixed/relative */
+      position: static !important;
       top: auto !important;
       left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
       width: 100% !important;
-      height: auto !important; /* CLAVE: Permite crecer infinitamente */
+      height: auto !important;
       min-height: auto !important;
       max-height: none !important;
-      overflow: visible !important; /* CLAVE: Evita cortes */
-      display: block !important; /* CLAVE: Elimina flexbox */
+      overflow: visible !important;
+      display: block !important;
       background: white !important;
       margin: 0 !important;
       padding: 20px 0 !important;
     }
 
-    /* 5. Estilos de las cajas para que no se partan */
+    /* 5. Forzar display block en TODOS los elementos internos */
+    #pantalla-reporte *, #pantalla-diploma * {
+      display: block !important;
+      position: static !important;
+      float: none !important;
+    }
+
+    /* 6. Estilos de las cajas */
     #reporte, #diploma {
       box-shadow: none !important;
       border: 4px double var(--dorado) !important;
@@ -154,35 +165,57 @@
       page-break-inside: avoid !important;
       break-inside: avoid !important;
       display: block !important;
+      padding: 20px !important;
     }
 
-    /* 6. Evitar que un nivel del reporte se corte a la mitad entre hojas */
+    /* 7. Evitar cortes en los niveles */
     .periodo-resumen {
       page-break-inside: avoid !important;
       break-inside: avoid !important;
       margin-bottom: 20px !important;
       display: block !important;
+      padding: 15px !important;
     }
 
-    /* 7. Forzar que el diploma empiece en una hoja completamente nueva */
+    /* 8. Diploma en página nueva */
     #pantalla-diploma {
       page-break-before: always !important;
       break-before: page !important;
     }
 
-    /* 8. Ocultar elementos de la interfaz (doble seguridad) */
-    .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice, #btn-mute, #collage-fondo {
-      display: none !important;
-    }
-
-    /* 9. CORREGIR LOS ESPACIOS RAROS EN EL PDF (Bug de Chrome) */
-    #reporte, #reporte * {
+    /* 9. CORREGIR TEXTO EMPALMADO - Flujo natural */
+    #reporte p, #reporte h2, #reporte h3,
+    #diploma p, #diploma h1, #diploma .nombre,
+    .respuesta-item, .respuesta-item strong {
+      display: block !important;
       text-align: left !important;
       letter-spacing: normal !important;
       word-spacing: normal !important;
       white-space: normal !important;
       word-break: normal !important;
-      line-height: 1.5 !important;
+      overflow-wrap: break-word !important;
+      line-height: 1.6 !important;
+      hyphens: none !important;
+      margin-bottom: 8px !important;
+    }
+
+    .respuesta-item strong {
+      font-weight: bold !important;
+      margin-bottom: 5px !important;
+    }
+
+    /* 10. Mantener colores de fondo */
+    .respuesta-item.correcta {
+      background: #c8e6c9 !important;
+      border-left: 3px solid var(--verde) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    .respuesta-item.incorrecta {
+      background: #ffcdd2 !important;
+      border-left: 3px solid var(--rojo) !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
     }
   }
   
@@ -239,12 +272,12 @@
 </div>
 
 <audio id="musica-fondo" loop></audio>
-<button id="btn-mute" onclick="toggleMute()" style="position:fixed; bottom:10px; right:10px; z-index:5; background:var(--azul-noche); color:var(--dorado); border:2px solid var(--dorado); border-radius:50%; width:50px; height:50px; font-size:1.5em; cursor:pointer; box-shadow:0 0 10px rgba(0,0,0,0.5);" title="Silenciar/Activar música">🔊</button>
+<button id="btn-mute" onclick="toggleMute()" style="position:fixed; bottom:10px; right:10px; z-index:5; background:var(--azul-noche); color:var(--dorado); border:2px solid var(--dorado); border-radius:50%; width:50px; height:50px; font-size:1.5em; cursor:pointer; box-shadow:0 0 10px rgba(0,0,0,0.5);" title="Silenciar/Activar música"></button>
 
 <div id="hud" style="display:none">
   <div><span class="nivel-badge" id="hud-nivel">Nivel 1</span> <span id="hud-periodo">Edad Media</span></div>
   <div>⭐ Puntos: <span id="hud-puntos">0</span></div>
-  <div>❓ Pregunta: <span id="hud-pregunta">1</span>/3</div>
+  <div> Pregunta: <span id="hud-pregunta">1</span>/3</div>
 </div>
 
 <div id="avatar-container" style="display:none"><img id="avatar-img" src="" alt="Avatar"></div>
@@ -255,11 +288,11 @@
 <div class="pantalla activa" id="pantalla-inicio">
   <div class="contenido">
     <div class="pergamino">
-      <h1>🕰️ Viaje en el Tiempo 🎼</h1>
+      <h1>️ Viaje en el Tiempo 🎼</h1>
       <h2>La Leyenda del Códice Perdido</h2>
       <p>El "Viento del Olvido" ha dispersado las páginas del Gran Códice de la Historia Musical. Los ecos del pasado se desvanecen y los instrumentos enmudecen.</p>
       <p>Tú eres un <strong>Cronista del Sonido</strong>, el único capaz de viajar a través del tiempo, superar las pruebas de cada era y recuperar los 6 fragmentos de conocimiento antes de que la música caiga en un silencio eterno.</p>
-      <h3>📜 Reglas del juego</h3>
+      <h3> Reglas del juego</h3>
       <p>• Cada nivel tiene <strong>3 preguntas aleatorias</strong> de un banco de 15.<br>• Ganas <strong>10 puntos</strong> por cada respuesta correcta.<br>• Si fallas 2 veces en la misma pregunta, recibirás una <strong>pista</strong> antes de reintentar.<br>• Al final obtendrás un <strong>diploma personalizado</strong> con tu reporte de respuestas.</p>
       <p style="text-align:center;margin-top:20px"><strong>¿Aceptas la misión?</strong></p>
       <input type="text" id="nombre-estudiante" placeholder="Escribe tu nombre completo" maxlength="40">
@@ -537,7 +570,7 @@ function iniciarNivel(){
   caminante.style.display='block';
   caminante.style.left='10px';
   setTimeout(()=>{ caminante.style.left='calc(100% - 130px)'; }, 50);
-  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 1000);
+  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 6000);
 }
 
 function mostrarPregunta(){
