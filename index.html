@@ -62,7 +62,7 @@
   input[type="text"]:focus{outline:none;border-color:var(--rojo);box-shadow:0 0 10px var(--dorado)}
   
   #avatar-container{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:200px;pointer-events:none;}
-  #avatar-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));transition:opacity .6s;}
+  #avatar-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));transition:opacity .2s;}
   #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 6s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
   @keyframes caminar{from{background-position:0 0}to{background-position:-300% 0}}
   
@@ -463,7 +463,7 @@ function iniciarNivel(){
   caminante.style.display='block';
   caminante.style.left='10px';
   setTimeout(()=>{ caminante.style.left='calc(100% - 130px)'; }, 50);
-  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 6000);
+  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 2000);
 }
 
 function mostrarPregunta(){
