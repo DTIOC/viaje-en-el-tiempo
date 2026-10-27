@@ -27,13 +27,12 @@
   #collage-fondo::after {content: '';position: absolute;top: 0;left: 0;width: 100%;height: 100%;background: rgba(15, 27, 61, 0.75);z-index: 1;}
   #collage-fondo .img-collage:hover {transform: scale(1.05);filter: brightness(1.2);}
   
-  /* CORREGIDO: Media queries para el collage */
   @media (max-width: 768px) {#collage-fondo {grid-template-columns: repeat(2, 1fr);grid-template-rows: repeat(3, 1fr);}}
   @media (max-width: 480px) {#collage-fondo {grid-template-columns: 1fr;grid-template-rows: repeat(6, 1fr);}}
   
   #fondo-dinamico{
     position:fixed !important;top:0 !important;left:0 !important;width:100% !important;height:100% !important;z-index:0 !important;
-    background-size: cover !important; /* Vuelto a cover para que se vea bien en celulares */
+    background-size: cover !important;
     background-position: center !important; 
     background-repeat:no-repeat !important;
     transition: opacity 1s; 
@@ -63,7 +62,7 @@
   
   #avatar-container{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:200px;pointer-events:none;}
   #avatar-img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));transition:opacity .2s;}
-  #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 6s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
+  #avatar-caminando{position:fixed;bottom:10px;left:10px;z-index:4;width:120px;height:180px;background-image:url('https://raw.githubusercontent.com/DTIOC/viaje-en-el-tiempo/main/avatar/caminar.png') !important;background-size: 400% 100% !important;background-repeat:no-repeat !important;animation:caminar 1s steps(4) infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));display:none;}
   @keyframes caminar{from{background-position:0 0}to{background-position:-300% 0}}
   
   #hud{position:fixed;top:10px;right:10px;z-index:5;background:rgba(15,27,61,0.9);border:2px solid var(--dorado);border-radius:8px;padding:10px 15px;color:var(--dorado-claro);font-size:0.95em;box-shadow:0 0 15px rgba(212,175,55,0.3);}
@@ -104,60 +103,86 @@
   @keyframes vortice-anim{0%{opacity:0}50%{opacity:1}100%{opacity:0}}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
 
-   @media print {
-    /* 1. Permitir que la página crezca sin límites al imprimir */
+  /* ===== REGLAS DE IMPRESIÓN BLINDADAS ===== */
+  @media print {
+    /* 1. Romper todas las restricciones de altura del documento */
     html, body {
       height: auto !important;
+      min-height: auto !important;
+      max-height: none !important;
       overflow: visible !important;
       background: white !important;
+      display: block !important;
     }
 
-    /* 2. Ocultar todo por defecto */
+    /* 2. Ocultar absolutamente todo por defecto */
     body * {
-      visibility: hidden;
+      visibility: hidden !important;
+      height: 0 !important;
+      width: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
-    /* 3. Hacer visibles solo el reporte y el diploma */
+    /* 3. Hacer visible SOLO el reporte y el diploma */
     #pantalla-reporte, #pantalla-reporte *,
     #pantalla-diploma, #pantalla-diploma * {
-      visibility: visible;
+      visibility: visible !important;
     }
 
-    /* 4. Configurar los contenedores para impresión */
+    /* 4. Convertir los contenedores en bloques normales sin posición fija */
     #pantalla-reporte, #pantalla-diploma {
-      position: relative !important;
-      top: 0 !important;
-      left: 0 !important;
+      position: static !important; /* CLAVE: Elimina fixed/relative */
+      top: auto !important;
+      left: auto !important;
       width: 100% !important;
-      height: auto !important; /* CLAVE: Permite que el contenido sea tan largo como necesite */
+      height: auto !important; /* CLAVE: Permite crecer infinitamente */
+      min-height: auto !important;
+      max-height: none !important;
+      overflow: visible !important; /* CLAVE: Evita cortes */
+      display: block !important; /* CLAVE: Elimina flexbox */
       background: white !important;
-      display: block !important;
-      overflow: visible !important; /* CLAVE: Evita que se corte el contenido */
-      padding: 20px 0;
+      margin: 0 !important;
+      padding: 20px 0 !important;
     }
 
-    /* 5. Estilos de las cajas */
+    /* 5. Estilos de las cajas para que no se partan */
     #reporte, #diploma {
       box-shadow: none !important;
       border: 4px double var(--dorado) !important;
-      margin: 0 auto 20px auto !important;
-      page-break-inside: avoid; /* Evita que una caja se parta a la mitad */
+      margin: 0 auto 30px auto !important;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      display: block !important;
     }
 
-    /* 6. Evitar que un nivel del reporte se corte entre dos hojas */
+    /* 6. Evitar que un nivel del reporte se corte a la mitad entre hojas */
     .periodo-resumen {
-      page-break-inside: avoid;
-      margin-bottom: 15px;
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-bottom: 20px !important;
+      display: block !important;
     }
 
-    /* 7. Forzar que el diploma empiece en una hoja nueva */
+    /* 7. Forzar que el diploma empiece en una hoja completamente nueva */
     #pantalla-diploma {
-      page-break-before: always;
+      page-break-before: always !important;
+      break-before: page !important;
     }
 
-    /* 8. Ocultar elementos de la interfaz */
+    /* 8. Ocultar elementos de la interfaz (doble seguridad) */
     .btn, #hud, #avatar-container, #avatar-caminando, #fondo-dinamico, #vortice, #btn-mute, #collage-fondo {
       display: none !important;
+    }
+
+    /* 9. CORREGIR LOS ESPACIOS RAROS EN EL PDF (Bug de Chrome) */
+    #reporte, #reporte * {
+      text-align: left !important;
+      letter-spacing: normal !important;
+      word-spacing: normal !important;
+      white-space: normal !important;
+      word-break: normal !important;
+      line-height: 1.5 !important;
     }
   }
   
@@ -512,7 +537,7 @@ function iniciarNivel(){
   caminante.style.display='block';
   caminante.style.left='10px';
   setTimeout(()=>{ caminante.style.left='calc(100% - 130px)'; }, 50);
-  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 2000);
+  setTimeout(()=>{ caminante.style.display='none'; mostrarPregunta(); }, 1000);
 }
 
 function mostrarPregunta(){
